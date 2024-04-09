@@ -1,0 +1,212 @@
+## Modules
+import os
+import numpy as np
+import gzip
+
+
+configfile: "config.yaml"
+
+#localrules: name, name
+
+print (config['species'])
+
+ 
+# get parent of current directory
+path = os.getcwd()
+out = os.path.abspath(os.path.join(path, os.pardir))
+OUT_DIR = f"{out}/output"
+
+
+def get_raw_reads(wildcards):
+    return config["raw_reads"][wildcards.spec]
+    
+def get_assembly(wildcards):
+    return config["assembly"][wildcards.spec]
+
+def get_fastq(wildcards):
+    return config["fastq"][wildcards.spec]
+
+def get_fail_reads(wildcards):
+    return config["fail_reads"][wildcards.spec]
+
+
+"""
+Rules
+"""
+
+rule all:
+    input:
+#        expand (OUT_DIR + "/{spec}_GACT_assembly.txt", spec=config['species']),
+#        expand (OUT_DIR + "/{spec}_GACT_raw_reads.txt", spec=config['species']),
+#        expand (OUT_DIR + "/{spec}_GACT_fail_reads.txt", spec=config['species']),
+#		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
+#        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
+        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
+        expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
+        
+#        which_analysis()
+          
+# rule all - main outputs: plot of coverage curves, list of problematic regions (contig eges), plot of mapped failed reads, bridging reads (= well aligned on both sides of the regions)
+
+"""
+Prepare input files
+"""
+
+# FAIL READS into FASTQ
+rule make_fastq_fail:
+    input:
+        get_fail_reads
+    output:
+    	OUT_DIR + "/mapped_reads/{spec}_fail.fq"
+    params:
+        sort="-m 4G",
+        fastq="-n"
+    threads: 3
+    wrapper:
+        "v3.7.0/bio/samtools/fastq/separate"
+
+rule zip_fastq_fail:
+    input:
+        OUT_DIR + "/mapped_reads/{spec}_fail.fq"
+    output:
+    	OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
+    threads: 5
+    shell:
+    	"""
+    	module load devel/pigz/2.8
+    	pigz -p 5 {input} -o {output}
+    	"""
+"""
+Detect regions rich in GA or CT (in sliding windows, above threshold)
+"""
+
+# GACT in ASSEMBLY, RAW READS, and FAIL reads - TODO output .bed files instead?
+rule GA_CT_assembly:
+    input: 
+        fasta_file=get_assembly
+    output:
+        out=OUT_DIR + "/{spec}_GACT_assembly.txt"
+    params:
+        window_size=50,
+        threshold=0.95
+    script:
+        "scripts/GACT_assembly.py"
+
+rule GA_CT_reads:
+    input: 
+        fastq_gzip_file=get_fastq
+    output:
+        out=OUT_DIR + "/{spec}_GACT_raw_reads.txt"
+    params:
+        window_size=50,
+        threshold=0.95
+    script:
+        "scripts/GACT_reads.py"
+
+rule GA_CT_fail_reads:
+    input: 
+        fastq_gzip_file=rules.zip_fastq_fail.output
+    output:
+        out=OUT_DIR + "/{spec}_GACT_fail_reads.txt"
+    params:
+        window_size=50,
+        threshold=0.95
+    script:
+        "scripts/GACT_reads.py"
+
+############## map raw and failed reads
+
+rule minimap_raw:
+    input:
+        ref=get_assembly,
+        raw_reads=get_fastq
+    output:
+    	OUT_DIR + "/mapped_reads/{spec}_raw.bam"
+    threads: 5
+    shell:
+        """
+        module load bioinfo/Minimap/2-2.26
+        minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
+        """
+        	
+rule samtools_sort_raw:
+    input:
+        OUT_DIR + "/mapped_reads/{spec}_raw.bam"
+    output:
+        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
+    params:
+        "-m 4G"
+    threads: 8
+    wrapper:
+        "https://github.com/snakemake/snakemake-wrappers/raw/0.2.0/bio/samtools/sort"
+        
+rule samtools_index_raw:
+    input:
+        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
+    output:
+        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai"
+    shell:
+        "https://github.com/snakemake/snakemake-wrappers/tree/0.2.0/bio/samtools/index"
+
+##############
+
+rule minimap_fail:
+    input:
+        ref=get_assembly,
+        raw_reads=rules.zip_fastq_fail.output
+    output:
+    	OUT_DIR + "/mapped_reads/{spec}_fail.bam"
+    threads: 5
+    shell:
+        """
+        module load bioinfo/Minimap/2-2.26
+        minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
+        """
+        	
+rule samtools_sort_fail:
+    input:
+        OUT_DIR + "/mapped_reads/{spec}_fail.bam"
+    output:
+        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
+    params:
+        "-m 4G"
+    threads: 8
+    wrapper:
+        "https://github.com/snakemake/snakemake-wrappers/raw/0.2.0/bio/samtools/sort"
+        
+rule samtools_index_fail:
+    input:
+        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
+    output:
+        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai"
+    shell:
+        "https://github.com/snakemake/snakemake-wrappers/tree/0.2.0/bio/samtools/index"
+
+## plot coverage curves
+
+rule plot_assembly_curves:
+    input: 
+        ass_regions=rules.GA_CT_assembly.output,
+        reads_regions=rules.GA_CT_reads.output,
+        aligned_reads=rules.minimap_raw.output,
+        aligned_reads_index=rules.samtools_index_raw.output,
+        ref=get_assembly
+    output:
+        out=OUT_DIR + "/{spec}_GACT_assembly.pdf"
+    params:
+    script:
+        "scripts/GACT_plot_coverages.py"
+
+
+rule plot_fail_curves:
+    input: 
+        reads_regions=rules.GA_CT_fail_reads.output,
+        aligned_reads=rules.minimap_fail.output,
+        aligned_reads_index=rules.samtools_index_fail.output,
+        ref=get_assembly
+    output:
+        out=OUT_DIR + "/{spec}_GACT_fail_reads.pdf"
+    params:
+    script:
+        "scripts/GACT_plot_coverages.py"
+
