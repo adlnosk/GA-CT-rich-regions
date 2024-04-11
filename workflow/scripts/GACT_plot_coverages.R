@@ -17,7 +17,7 @@ sam = snakemake@input[["aligned_reads"]]
 ref = snakemake@input[["ref"]]
 
 plotfile=snakemake@output[["plot"]]
-outdepth=snakemake@output[["depthfiles"]]
+outdepth=snakemake@params[["depth_prefix"]]
 
 # load libraries
 library(dplyr)

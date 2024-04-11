@@ -4,7 +4,7 @@ import numpy as np
 import gzip
 
 
-configfile: "config.yaml"
+configfile: "../config/config.yaml"
 
 #localrules: name, name
 
@@ -14,7 +14,7 @@ print (config['species'])
 # get parent of current directory
 path = os.getcwd()
 out = os.path.abspath(os.path.join(path, os.pardir))
-OUT_DIR = f"{out}/output"
+OUT_DIR = f"{out}/results"
 
 
 def get_raw_reads(wildcards):
@@ -41,8 +41,8 @@ rule all:
 #        expand (OUT_DIR + "/{spec}_GACT_fail_reads.txt", spec=config['species']),
 #		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
 #        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
-        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
-        expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
+        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species'])
+#        expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
         
 #        which_analysis()
           
@@ -86,6 +86,8 @@ rule GA_CT_assembly:
         fasta_file=get_assembly
     output:
         out=OUT_DIR + "/{spec}_GACT_assembly.txt"
+    conda:
+        "envs/py.yml"
     params:
         window_size=50,
         threshold=0.95
@@ -97,6 +99,8 @@ rule GA_CT_reads:
         fastq_gzip_file=get_fastq
     output:
         out=OUT_DIR + "/{spec}_GACT_raw_reads.txt"
+    conda:
+        "envs/py.yml"
     params:
         window_size=50,
         threshold=0.95
@@ -108,6 +112,8 @@ rule GA_CT_fail_reads:
         fastq_gzip_file=rules.zip_fastq_fail.output
     output:
         out=OUT_DIR + "/{spec}_GACT_fail_reads.txt"
+    conda:
+        "envs/py.yml"
     params:
         window_size=50,
         threshold=0.95
@@ -192,21 +198,13 @@ rule plot_assembly_curves:
         aligned_reads_index=rules.samtools_index_raw.output,
         ref=get_assembly
     output:
-        out=OUT_DIR + "/{spec}_GACT_assembly.pdf"
+        plot=OUT_DIR + "/{spec}_GACT_assembly.pdf"
     params:
+        depth_prefix=r"{spec}_ass_regions_flank",
+    	species=r"{spec}",
+    	plotting_flank=10000
+    conda: 
+    	"envs/r.yml"
     script:
-        "scripts/GACT_plot_coverages.py"
-
-
-rule plot_fail_curves:
-    input: 
-        reads_regions=rules.GA_CT_fail_reads.output,
-        aligned_reads=rules.minimap_fail.output,
-        aligned_reads_index=rules.samtools_index_fail.output,
-        ref=get_assembly
-    output:
-        out=OUT_DIR + "/{spec}_GACT_fail_reads.pdf"
-    params:
-    script:
-        "scripts/GACT_plot_coverages.py"
+        "scripts/GACT_plot_coverages.R"
 
