@@ -1,0 +1,16 @@
+name: base
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - conda
+  - setuptools
+  - pip
+  - wheel
+  - conda-content-trust
+  - mamba
+  - conda-libmamba-solver
+  - ca-certificates
+  - certifi
+  - openssl
+prefix: /usr/local/bioinfo/src/Miniconda/Miniconda3
