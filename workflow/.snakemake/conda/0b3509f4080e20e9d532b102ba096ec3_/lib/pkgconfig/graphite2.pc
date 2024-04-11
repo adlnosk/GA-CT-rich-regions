@@ -1,0 +1,7 @@
+
+Name: Graphite2
+Description: Font rendering engine for Complex Scripts
+Version: 3.0.1
+Libs: -L/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_/lib -lgraphite2
+Cflags: -I/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_/include
+

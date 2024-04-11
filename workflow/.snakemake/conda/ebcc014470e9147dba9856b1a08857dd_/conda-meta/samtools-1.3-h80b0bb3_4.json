@@ -1,0 +1,214 @@
+{
+  "build": "h80b0bb3_4",
+  "build_number": 4,
+  "channel": "https://conda.anaconda.org/bioconda/linux-64",
+  "constrains": [],
+  "depends": [
+    "curl >=7.71.1,<8.0a0",
+    "libgcc-ng >=7.5.0",
+    "zlib >=1.2.11,<1.3.0a0",
+    "openssl >=1.1.0,<=1.1.1"
+  ],
+  "extracted_package_dir": "/home/apoublan/.conda/pkgs/samtools-1.3-h80b0bb3_4",
+  "features": "",
+  "files": [
+    "bin/ace2sam",
+    "bin/blast2sam.pl",
+    "bin/bowtie2sam.pl",
+    "bin/export2sam.pl",
+    "bin/interpolate_sam.pl",
+    "bin/maq2sam-long",
+    "bin/maq2sam-short",
+    "bin/md5fa",
+    "bin/md5sum-lite",
+    "bin/novo2sam.pl",
+    "bin/plot-bamstats",
+    "bin/psl2sam.pl",
+    "bin/sam2vcf.pl",
+    "bin/samtools",
+    "bin/samtools.pl",
+    "bin/seq_cache_populate.pl",
+    "bin/soap2sam.pl",
+    "bin/wgsim",
+    "bin/wgsim_eval.pl",
+    "bin/zoom2sam.pl",
+    "share/man/man1/samtools.1",
+    "share/man/man1/wgsim.1"
+  ],
+  "fn": "samtools-1.3-h80b0bb3_4.tar.bz2",
+  "license": "MIT",
+  "link": {
+    "source": "/home/apoublan/.conda/pkgs/samtools-1.3-h80b0bb3_4",
+    "type": 1
+  },
+  "md5": "1f0b8ba0a60aa613265d446887015b60",
+  "name": "samtools",
+  "package_tarball_full_path": "/home/apoublan/.conda/pkgs/samtools-1.3-h80b0bb3_4.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "bin/ace2sam",
+        "path_type": "hardlink",
+        "sha256": "e32568bb46faefebc25f949e9833da570f8f04c4156c06e088b5b4f2f68564fc",
+        "sha256_in_prefix": "e32568bb46faefebc25f949e9833da570f8f04c4156c06e088b5b4f2f68564fc",
+        "size_in_bytes": 29184
+      },
+      {
+        "_path": "bin/blast2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "4d7720b9095cef6e51311e6de3fa8fe629f941e5a1cc1d86356945d1888eae7e",
+        "sha256_in_prefix": "4d7720b9095cef6e51311e6de3fa8fe629f941e5a1cc1d86356945d1888eae7e",
+        "size_in_bytes": 5328
+      },
+      {
+        "_path": "bin/bowtie2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "44378bc61de934a6a07cd62c75405636c51f1e96fa1aada3304cd5ec4868d876",
+        "sha256_in_prefix": "44378bc61de934a6a07cd62c75405636c51f1e96fa1aada3304cd5ec4868d876",
+        "size_in_bytes": 3364
+      },
+      {
+        "_path": "bin/export2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "e61cd3f77fc4858bc0610314b7df74d67afb2ce4109ce07694f6f7273177778a",
+        "sha256_in_prefix": "e61cd3f77fc4858bc0610314b7df74d67afb2ce4109ce07694f6f7273177778a",
+        "size_in_bytes": 18032
+      },
+      {
+        "_path": "bin/interpolate_sam.pl",
+        "path_type": "hardlink",
+        "sha256": "3b05d8dac6abd6499a45ff8ddd01fc558815ad863f16b7380da861ea09fc11dd",
+        "sha256_in_prefix": "3b05d8dac6abd6499a45ff8ddd01fc558815ad863f16b7380da861ea09fc11dd",
+        "size_in_bytes": 6125
+      },
+      {
+        "_path": "bin/maq2sam-long",
+        "path_type": "hardlink",
+        "sha256": "c502ab31abb615a42d3f98964baf8b2a1e0640661a34082fadcdc0045f0fe51c",
+        "sha256_in_prefix": "c502ab31abb615a42d3f98964baf8b2a1e0640661a34082fadcdc0045f0fe51c",
+        "size_in_bytes": 20848
+      },
+      {
+        "_path": "bin/maq2sam-short",
+        "path_type": "hardlink",
+        "sha256": "0672435bf378f0f781a377dd9ed62448b0f31d543878d57685c051bad091b252",
+        "sha256_in_prefix": "0672435bf378f0f781a377dd9ed62448b0f31d543878d57685c051bad091b252",
+        "size_in_bytes": 20848
+      },
+      {
+        "_path": "bin/md5fa",
+        "path_type": "hardlink",
+        "sha256": "733c4f1d76f9176c35087a3defbb4f76f20cd9c8ede926d3444becbe99777291",
+        "sha256_in_prefix": "733c4f1d76f9176c35087a3defbb4f76f20cd9c8ede926d3444becbe99777291",
+        "size_in_bytes": 25120
+      },
+      {
+        "_path": "bin/md5sum-lite",
+        "path_type": "hardlink",
+        "sha256": "1baf3e0818d2278dbba47a444ffcd696ad4fb47c59c7991e462b2e92396c33dd",
+        "sha256_in_prefix": "1baf3e0818d2278dbba47a444ffcd696ad4fb47c59c7991e462b2e92396c33dd",
+        "size_in_bytes": 24896
+      },
+      {
+        "_path": "bin/novo2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "168b0ddb970b8618b02daf27a84297f84c31b2e87d57a8572baf1afbbf634a29",
+        "sha256_in_prefix": "168b0ddb970b8618b02daf27a84297f84c31b2e87d57a8572baf1afbbf634a29",
+        "size_in_bytes": 6773
+      },
+      {
+        "_path": "bin/plot-bamstats",
+        "path_type": "hardlink",
+        "sha256": "02caec7383869fd0ab65cbed5d59181fabd5ea200dedb6acb4fdd6f48477e229",
+        "sha256_in_prefix": "02caec7383869fd0ab65cbed5d59181fabd5ea200dedb6acb4fdd6f48477e229",
+        "size_in_bytes": 48367
+      },
+      {
+        "_path": "bin/psl2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "cb3b63aa7e52d5d382549f14d775bb3d9e3ee16f7c38d3fa7433dfd102e009f9",
+        "sha256_in_prefix": "cb3b63aa7e52d5d382549f14d775bb3d9e3ee16f7c38d3fa7433dfd102e009f9",
+        "size_in_bytes": 3208
+      },
+      {
+        "_path": "bin/sam2vcf.pl",
+        "path_type": "hardlink",
+        "sha256": "9b462294867cacbc49aabc26188ab3066ace629f5ab03a664780b92abb11f8c0",
+        "sha256_in_prefix": "9b462294867cacbc49aabc26188ab3066ace629f5ab03a664780b92abb11f8c0",
+        "size_in_bytes": 8961
+      },
+      {
+        "_path": "bin/samtools",
+        "path_type": "hardlink",
+        "sha256": "c0bd1522cff6e12e0e3cb7197ada425502bfd366674c3bc9f5a2db0da18dffc0",
+        "sha256_in_prefix": "c0bd1522cff6e12e0e3cb7197ada425502bfd366674c3bc9f5a2db0da18dffc0",
+        "size_in_bytes": 1077624
+      },
+      {
+        "_path": "bin/samtools.pl",
+        "path_type": "hardlink",
+        "sha256": "0e59d966a74db4c2da0431e6a73c5737ca10f5bbc42ee0695ecf7cd0b5c11c2e",
+        "sha256_in_prefix": "0e59d966a74db4c2da0431e6a73c5737ca10f5bbc42ee0695ecf7cd0b5c11c2e",
+        "size_in_bytes": 16478
+      },
+      {
+        "_path": "bin/seq_cache_populate.pl",
+        "path_type": "hardlink",
+        "sha256": "92c72f6106cf1c105e22d8b730f990feb3e09d841ef6ccc85c8e8ea2dcf955ad",
+        "sha256_in_prefix": "92c72f6106cf1c105e22d8b730f990feb3e09d841ef6ccc85c8e8ea2dcf955ad",
+        "size_in_bytes": 11105
+      },
+      {
+        "_path": "bin/soap2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "ad4b0819220a711483023235e441e762e9912eb6040aacec65049d781e4357e7",
+        "sha256_in_prefix": "ad4b0819220a711483023235e441e762e9912eb6040aacec65049d781e4357e7",
+        "size_in_bytes": 3909
+      },
+      {
+        "_path": "bin/wgsim",
+        "path_type": "hardlink",
+        "sha256": "5cefd7b8f9234456446384eb046e211c9ce80d6f261f5c1cfd5015d8e6135a20",
+        "sha256_in_prefix": "5cefd7b8f9234456446384eb046e211c9ce80d6f261f5c1cfd5015d8e6135a20",
+        "size_in_bytes": 30032
+      },
+      {
+        "_path": "bin/wgsim_eval.pl",
+        "path_type": "hardlink",
+        "sha256": "2596796cab6daa117bdd63edde99594f9659684de0945e619d1c54ee1b80279a",
+        "sha256_in_prefix": "2596796cab6daa117bdd63edde99594f9659684de0945e619d1c54ee1b80279a",
+        "size_in_bytes": 12540
+      },
+      {
+        "_path": "bin/zoom2sam.pl",
+        "path_type": "hardlink",
+        "sha256": "b6ce3d3d3814569b76bfb8df69a458a11f11efdc56183c922eeefe2e17d08900",
+        "sha256_in_prefix": "b6ce3d3d3814569b76bfb8df69a458a11f11efdc56183c922eeefe2e17d08900",
+        "size_in_bytes": 3583
+      },
+      {
+        "_path": "share/man/man1/samtools.1",
+        "path_type": "hardlink",
+        "sha256": "43a47c77d071d9321366e67aa86071c80b9d6866561e8e40ebc726eeb925aabf",
+        "sha256_in_prefix": "43a47c77d071d9321366e67aa86071c80b9d6866561e8e40ebc726eeb925aabf",
+        "size_in_bytes": 53403
+      },
+      {
+        "_path": "share/man/man1/wgsim.1",
+        "path_type": "hardlink",
+        "sha256": "003afa8edfd6a3f9bc4bcde5de737e2f13ff6d90873b10749cb95f8077f5746f",
+        "sha256_in_prefix": "003afa8edfd6a3f9bc4bcde5de737e2f13ff6d90873b10749cb95f8077f5746f",
+        "size_in_bytes": 1194
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "samtools==1.3",
+  "sha256": "ce3744e45c73555856f191b501275b83f948345e58192e6cfc0af1f47a0adcb5",
+  "size": 479389,
+  "subdir": "linux-64",
+  "timestamp": 1593773251000,
+  "track_features": "",
+  "url": "https://conda.anaconda.org/bioconda/linux-64/samtools-1.3-h80b0bb3_4.tar.bz2",
+  "version": "1.3"
+}

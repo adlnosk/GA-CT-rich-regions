@@ -1,0 +1,8 @@
+channels:
+- conda-forge
+- bioconda
+- biopython
+dependencies:
+- python=3.7.9
+- Bio
+

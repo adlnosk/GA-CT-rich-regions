@@ -1,0 +1,11 @@
+prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: GObject
+Description: GLib Type, Object, Parameter and Signal Library
+Version: 2.78.1
+Requires: glib-2.0
+Requires.private: libffi >=  3.0.0
+Libs: -L${libdir} -lgobject-2.0
+Cflags: -I${includedir}

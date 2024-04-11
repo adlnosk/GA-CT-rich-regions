@@ -1,0 +1,13 @@
+prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/ebcc014470e9147dba9856b1a08857dd_
+exec_prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/ebcc014470e9147dba9856b1a08857dd_
+libdir=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/ebcc014470e9147dba9856b1a08857dd_/lib
+sharedlibdir=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/ebcc014470e9147dba9856b1a08857dd_/lib
+includedir=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/ebcc014470e9147dba9856b1a08857dd_/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

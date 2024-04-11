@@ -1,0 +1,11 @@
+prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: XCB XFixes
+Description: XCB XFixes Extension
+Version: 1.15
+Requires.private: xcb xcb-render xcb-shape
+Libs: -L${libdir} -lxcb-xfixes
+Cflags: -I${includedir}

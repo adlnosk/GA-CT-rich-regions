@@ -1,0 +1,75 @@
+Building DAG of jobs...
+Creating conda environment envs/py.yml...
+Downloading and installing remote packages.
+Environment for /work/project/briefwp3/Adela/GA_CT/workflow/envs/py.yml created (location: .snakemake/conda/cb935e6536021e213496e1ff74f17f3a_)
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+GA_CT_assembly              1
+GA_CT_reads                 1
+all                         1
+minimap_raw                 1
+plot_assembly_curves        1
+samtools_index_raw          1
+samtools_sort_raw           1
+total                       7
+
+Select jobs to execute...
+Execute 3 jobs...
+
+[Thu Apr 11 10:32:53 2024]
+localrule GA_CT_assembly:
+    input: /work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt
+    jobid: 2
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt
+    wildcards: spec=Medicago_sativa
+    resources: tmpdir=/tmp
+
+[Thu Apr 11 10:32:53 2024]
+localrule minimap_raw:
+    input: /work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa, /work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw.bam
+    jobid: 4
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw.bam
+    wildcards: spec=Medicago_sativa
+    threads: 5
+    resources: tmpdir=/tmp
+
+
+[Thu Apr 11 10:32:53 2024]
+localrule GA_CT_reads:
+    input: /work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    jobid: 3
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    wildcards: spec=Medicago_sativa
+    resources: tmpdir=/tmp
+
+Activating conda environment: .snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+Activating conda environment: .snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+Activating conda environment: .snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+Activating conda environment: .snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 95:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/cb935e6536021e213496e1ff74f17f3a_'; set -euo pipefail;  python /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpeugretyv.GACT_assembly.py' returned non-zero exit status 1.
+[Thu Apr 11 10:32:57 2024]
+Error in rule GA_CT_assembly:
+    jobid: 2
+    input: /work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 108:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/cb935e6536021e213496e1ff74f17f3a_'; set -euo pipefail;  python /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpzvjin6c3.GACT_reads.py' returned non-zero exit status 1.
+[Thu Apr 11 10:32:57 2024]
+Error in rule GA_CT_reads:
+    jobid: 3
+    input: /work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/cb935e6536021e213496e1ff74f17f3a_
+

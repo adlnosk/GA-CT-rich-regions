@@ -1,0 +1,342 @@
+{
+  "build": "r43hc72bb7e_1004",
+  "build_number": 1004,
+  "channel": "https://conda.anaconda.org/conda-forge/noarch",
+  "constrains": [],
+  "depends": [
+    "r-base >=4.3,<4.4.0a0",
+    "r-proto"
+  ],
+  "extracted_package_dir": "/home/apoublan/.conda/pkgs/r-gsubfn-0.7-r43hc72bb7e_1004",
+  "features": "",
+  "files": [
+    "lib/R/library/gsubfn/ANNOUNCE",
+    "lib/R/library/gsubfn/DESCRIPTION",
+    "lib/R/library/gsubfn/INDEX",
+    "lib/R/library/gsubfn/Meta/Rd.rds",
+    "lib/R/library/gsubfn/Meta/demo.rds",
+    "lib/R/library/gsubfn/Meta/features.rds",
+    "lib/R/library/gsubfn/Meta/hsearch.rds",
+    "lib/R/library/gsubfn/Meta/links.rds",
+    "lib/R/library/gsubfn/Meta/nsInfo.rds",
+    "lib/R/library/gsubfn/Meta/package.rds",
+    "lib/R/library/gsubfn/Meta/vignette.rds",
+    "lib/R/library/gsubfn/NAMESPACE",
+    "lib/R/library/gsubfn/NEWS",
+    "lib/R/library/gsubfn/R/gsubfn",
+    "lib/R/library/gsubfn/R/gsubfn.rdb",
+    "lib/R/library/gsubfn/R/gsubfn.rdx",
+    "lib/R/library/gsubfn/THANKS",
+    "lib/R/library/gsubfn/WISHLIST",
+    "lib/R/library/gsubfn/demo/gsubfn-chron.R",
+    "lib/R/library/gsubfn/demo/gsubfn-cut.R",
+    "lib/R/library/gsubfn/demo/gsubfn-gries.R",
+    "lib/R/library/gsubfn/demo/gsubfn-lower.R",
+    "lib/R/library/gsubfn/demo/gsubfn-si.R",
+    "lib/R/library/gsubfn/demo/gsubfn-unitTests.R",
+    "lib/R/library/gsubfn/doc/gsubfn.R",
+    "lib/R/library/gsubfn/doc/gsubfn.Rnw",
+    "lib/R/library/gsubfn/doc/gsubfn.pdf",
+    "lib/R/library/gsubfn/doc/index.html",
+    "lib/R/library/gsubfn/help/AnIndex",
+    "lib/R/library/gsubfn/help/aliases.rds",
+    "lib/R/library/gsubfn/help/gsubfn.rdb",
+    "lib/R/library/gsubfn/help/gsubfn.rdx",
+    "lib/R/library/gsubfn/help/paths.rds",
+    "lib/R/library/gsubfn/html/00Index.html",
+    "lib/R/library/gsubfn/html/R.css",
+    "lib/R/library/gsubfn/lipsum.txt",
+    "lib/R/library/gsubfn/sample.txt",
+    "lib/R/library/gsubfn/unitTests/runit.all.R"
+  ],
+  "fn": "r-gsubfn-0.7-r43hc72bb7e_1004.conda",
+  "license": "GPL (>= 2)",
+  "link": {
+    "source": "/home/apoublan/.conda/pkgs/r-gsubfn-0.7-r43hc72bb7e_1004",
+    "type": 1
+  },
+  "md5": "b82cf34a1d362c18e52bfa4b73828a1b",
+  "name": "r-gsubfn",
+  "noarch": "generic",
+  "package_tarball_full_path": "/home/apoublan/.conda/pkgs/r-gsubfn-0.7-r43hc72bb7e_1004.conda",
+  "package_type": "noarch_generic",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "lib/R/library/gsubfn/ANNOUNCE",
+        "path_type": "hardlink",
+        "sha256": "ce751b90880483f03636765b5775f506f3193f2427177c38a23109fa35a21561",
+        "sha256_in_prefix": "ce751b90880483f03636765b5775f506f3193f2427177c38a23109fa35a21561",
+        "size_in_bytes": 1250
+      },
+      {
+        "_path": "lib/R/library/gsubfn/DESCRIPTION",
+        "path_type": "hardlink",
+        "sha256": "a14261bafe6edd699639eede9fe6b0ee8df221a2020698722ae4e351f26a1b6d",
+        "sha256_in_prefix": "a14261bafe6edd699639eede9fe6b0ee8df221a2020698722ae4e351f26a1b6d",
+        "size_in_bytes": 1532
+      },
+      {
+        "_path": "lib/R/library/gsubfn/INDEX",
+        "path_type": "hardlink",
+        "sha256": "d6f30c9139d8e52ccccbe7db9c889f4f2a26d091618de241a908b76fe5e89eaf",
+        "sha256_in_prefix": "d6f30c9139d8e52ccccbe7db9c889f4f2a26d091618de241a908b76fe5e89eaf",
+        "size_in_bytes": 641
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/Rd.rds",
+        "path_type": "hardlink",
+        "sha256": "65a40bafe99f116aab426d11516cf8ac08e56d444a441cee7af0319c70dc957e",
+        "sha256_in_prefix": "65a40bafe99f116aab426d11516cf8ac08e56d444a441cee7af0319c70dc957e",
+        "size_in_bytes": 682
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/demo.rds",
+        "path_type": "hardlink",
+        "sha256": "718e3e05b2eefb2d6d53e63a813eba4f6f6b5cf00afa7688a4bd0397302c7474",
+        "sha256_in_prefix": "718e3e05b2eefb2d6d53e63a813eba4f6f6b5cf00afa7688a4bd0397302c7474",
+        "size_in_bytes": 297
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/features.rds",
+        "path_type": "hardlink",
+        "sha256": "7b3f95a83e94a785d087d4d4e95e3714ebae7b437b23384ca5227d56161f7600",
+        "sha256_in_prefix": "7b3f95a83e94a785d087d4d4e95e3714ebae7b437b23384ca5227d56161f7600",
+        "size_in_bytes": 122
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/hsearch.rds",
+        "path_type": "hardlink",
+        "sha256": "43448b3352057a38887c91b3c95695931baf899b307a7f2acf2826915409a754",
+        "sha256_in_prefix": "43448b3352057a38887c91b3c95695931baf899b307a7f2acf2826915409a754",
+        "size_in_bytes": 688
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/links.rds",
+        "path_type": "hardlink",
+        "sha256": "42541e7ce6789761191e848d2b71a5ba8d71292d6d87a6e828287f1b3c7ceca9",
+        "sha256_in_prefix": "42541e7ce6789761191e848d2b71a5ba8d71292d6d87a6e828287f1b3c7ceca9",
+        "size_in_bytes": 311
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/nsInfo.rds",
+        "path_type": "hardlink",
+        "sha256": "adf8e792d3b3c53af6d2c459d18fed7c7e98ffc2ab8310c41196a80ef997ae65",
+        "sha256_in_prefix": "adf8e792d3b3c53af6d2c459d18fed7c7e98ffc2ab8310c41196a80ef997ae65",
+        "size_in_bytes": 272
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/package.rds",
+        "path_type": "hardlink",
+        "sha256": "2e40b76c7d2e0fc2eab448d1ceab73a14f2a936aee72957d708fab6a39223975",
+        "sha256_in_prefix": "2e40b76c7d2e0fc2eab448d1ceab73a14f2a936aee72957d708fab6a39223975",
+        "size_in_bytes": 1186
+      },
+      {
+        "_path": "lib/R/library/gsubfn/Meta/vignette.rds",
+        "path_type": "hardlink",
+        "sha256": "bd4888dd187719e54f12fd9a6b38964554c8dd75c24f1cc8364cdb3e534d8101",
+        "sha256_in_prefix": "bd4888dd187719e54f12fd9a6b38964554c8dd75c24f1cc8364cdb3e534d8101",
+        "size_in_bytes": 252
+      },
+      {
+        "_path": "lib/R/library/gsubfn/NAMESPACE",
+        "path_type": "hardlink",
+        "sha256": "c9f368f2ac0a235bcff2d8e7bf88be02416c6bce546f88d18a2609afa9ebbcf8",
+        "sha256_in_prefix": "c9f368f2ac0a235bcff2d8e7bf88be02416c6bce546f88d18a2609afa9ebbcf8",
+        "size_in_bytes": 198
+      },
+      {
+        "_path": "lib/R/library/gsubfn/NEWS",
+        "path_type": "hardlink",
+        "sha256": "5f1113977dc914cb642837305bb67ae001fe2aa46b1e5c2dabdc8c4e51f83836",
+        "sha256_in_prefix": "5f1113977dc914cb642837305bb67ae001fe2aa46b1e5c2dabdc8c4e51f83836",
+        "size_in_bytes": 9138
+      },
+      {
+        "_path": "lib/R/library/gsubfn/R/gsubfn",
+        "path_type": "hardlink",
+        "sha256": "570ca456b280cdeb201ef5ebdf22dc8f80092e2c0c68e33c7f73340e420f3759",
+        "sha256_in_prefix": "570ca456b280cdeb201ef5ebdf22dc8f80092e2c0c68e33c7f73340e420f3759",
+        "size_in_bytes": 1058
+      },
+      {
+        "_path": "lib/R/library/gsubfn/R/gsubfn.rdb",
+        "path_type": "hardlink",
+        "sha256": "e45bbf996a4b6ecc951c400bc52aa03c1289219dedd881c01f15dcb5d66f4d28",
+        "sha256_in_prefix": "e45bbf996a4b6ecc951c400bc52aa03c1289219dedd881c01f15dcb5d66f4d28",
+        "size_in_bytes": 32378
+      },
+      {
+        "_path": "lib/R/library/gsubfn/R/gsubfn.rdx",
+        "path_type": "hardlink",
+        "sha256": "24b9faafc939c8c95fd2bde3b1327c76225f769eafa8cbb2b367d71a9e98c020",
+        "sha256_in_prefix": "24b9faafc939c8c95fd2bde3b1327c76225f769eafa8cbb2b367d71a9e98c020",
+        "size_in_bytes": 491
+      },
+      {
+        "_path": "lib/R/library/gsubfn/THANKS",
+        "path_type": "hardlink",
+        "sha256": "44d54b21206855d3a9ba09df46dd5db8a8b721d00a5c2ce23ee3cffefb8974df",
+        "sha256_in_prefix": "44d54b21206855d3a9ba09df46dd5db8a8b721d00a5c2ce23ee3cffefb8974df",
+        "size_in_bytes": 330
+      },
+      {
+        "_path": "lib/R/library/gsubfn/WISHLIST",
+        "path_type": "hardlink",
+        "sha256": "4b7692d6d6804f0f6c6eeb4ea56c6004252ec5a4b3505dfbb58884d2bc8a0e28",
+        "sha256_in_prefix": "4b7692d6d6804f0f6c6eeb4ea56c6004252ec5a4b3505dfbb58884d2bc8a0e28",
+        "size_in_bytes": 483
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-chron.R",
+        "path_type": "hardlink",
+        "sha256": "dc64e1bebc80701158451f0dbf6a41a7ee6c89bb8256f91b33d724deb7c8dfa4",
+        "sha256_in_prefix": "dc64e1bebc80701158451f0dbf6a41a7ee6c89bb8256f91b33d724deb7c8dfa4",
+        "size_in_bytes": 523
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-cut.R",
+        "path_type": "hardlink",
+        "sha256": "d2d5657baf0cf47d81de64e8fe9d5fc25a668104e1f17926413146d16c012d9f",
+        "sha256_in_prefix": "d2d5657baf0cf47d81de64e8fe9d5fc25a668104e1f17926413146d16c012d9f",
+        "size_in_bytes": 985
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-gries.R",
+        "path_type": "hardlink",
+        "sha256": "8fac1667e5f7dce5b8382aa47b4b1bafa8cb202b075f5fee42c10aeea93b867c",
+        "sha256_in_prefix": "8fac1667e5f7dce5b8382aa47b4b1bafa8cb202b075f5fee42c10aeea93b867c",
+        "size_in_bytes": 1085
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-lower.R",
+        "path_type": "hardlink",
+        "sha256": "7d73fe2fdb5c49b670fac99f0ab6aed17d434a237c2d9e8fb8518a06efda74a5",
+        "sha256_in_prefix": "7d73fe2fdb5c49b670fac99f0ab6aed17d434a237c2d9e8fb8518a06efda74a5",
+        "size_in_bytes": 120
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-si.R",
+        "path_type": "hardlink",
+        "sha256": "6d87bffc61538d532ffce2bc53cc7a9c658c6b5424fb988ec34b3cf4565a6400",
+        "sha256_in_prefix": "6d87bffc61538d532ffce2bc53cc7a9c658c6b5424fb988ec34b3cf4565a6400",
+        "size_in_bytes": 465
+      },
+      {
+        "_path": "lib/R/library/gsubfn/demo/gsubfn-unitTests.R",
+        "path_type": "hardlink",
+        "sha256": "34b9036508a02a80490dbfb2664ec4506ed7773d2670eb693844b3457b3b66cf",
+        "sha256_in_prefix": "34b9036508a02a80490dbfb2664ec4506ed7773d2670eb693844b3457b3b66cf",
+        "size_in_bytes": 201
+      },
+      {
+        "_path": "lib/R/library/gsubfn/doc/gsubfn.R",
+        "path_type": "hardlink",
+        "sha256": "74ff98655acdaf60eaec8faf894264db8582b72eeed7fb1a6d23aed54d9f96f0",
+        "sha256_in_prefix": "74ff98655acdaf60eaec8faf894264db8582b72eeed7fb1a6d23aed54d9f96f0",
+        "size_in_bytes": 8814
+      },
+      {
+        "_path": "lib/R/library/gsubfn/doc/gsubfn.Rnw",
+        "path_type": "hardlink",
+        "sha256": "3f3c70ccf751ef7668adeaebc6555a7e2480677f03ebf6b99954bb9427b9db84",
+        "sha256_in_prefix": "3f3c70ccf751ef7668adeaebc6555a7e2480677f03ebf6b99954bb9427b9db84",
+        "size_in_bytes": 32261
+      },
+      {
+        "_path": "lib/R/library/gsubfn/doc/gsubfn.pdf",
+        "path_type": "hardlink",
+        "sha256": "6a91ec2953e60a3762789c3709091270653d2f2f38a79d2be7a89b2247f53b41",
+        "sha256_in_prefix": "6a91ec2953e60a3762789c3709091270653d2f2f38a79d2be7a89b2247f53b41",
+        "size_in_bytes": 280729
+      },
+      {
+        "_path": "lib/R/library/gsubfn/doc/index.html",
+        "path_type": "hardlink",
+        "sha256": "38c2f6a13a65afc6c3f52fa0b45eabdd5e6ed74e2532c1428914856a881f1244",
+        "sha256_in_prefix": "38c2f6a13a65afc6c3f52fa0b45eabdd5e6ed74e2532c1428914856a881f1244",
+        "size_in_bytes": 1410
+      },
+      {
+        "_path": "lib/R/library/gsubfn/help/AnIndex",
+        "path_type": "hardlink",
+        "sha256": "f0ba2ab18b3f138e966622136456f18d8672ba0066b04137813261076d3c659c",
+        "sha256_in_prefix": "f0ba2ab18b3f138e966622136456f18d8672ba0066b04137813261076d3c659c",
+        "size_in_bytes": 331
+      },
+      {
+        "_path": "lib/R/library/gsubfn/help/aliases.rds",
+        "path_type": "hardlink",
+        "sha256": "7001d716c728d6bd3bf5c601fd10b76d29d7a258991d32f64467dcd03c9263bd",
+        "sha256_in_prefix": "7001d716c728d6bd3bf5c601fd10b76d29d7a258991d32f64467dcd03c9263bd",
+        "size_in_bytes": 247
+      },
+      {
+        "_path": "lib/R/library/gsubfn/help/gsubfn.rdb",
+        "path_type": "hardlink",
+        "sha256": "91b35287da6b03eff30dddcfc0dcbd1fdfe96384f793f830f5f32cd11af17476",
+        "sha256_in_prefix": "91b35287da6b03eff30dddcfc0dcbd1fdfe96384f793f830f5f32cd11af17476",
+        "size_in_bytes": 34722
+      },
+      {
+        "_path": "lib/R/library/gsubfn/help/gsubfn.rdx",
+        "path_type": "hardlink",
+        "sha256": "a0ecf206e6943bb8a361c7030ba996f76fe89da91958a378cfba5710d883b7b1",
+        "sha256_in_prefix": "a0ecf206e6943bb8a361c7030ba996f76fe89da91958a378cfba5710d883b7b1",
+        "size_in_bytes": 370
+      },
+      {
+        "_path": "lib/R/library/gsubfn/help/paths.rds",
+        "path_type": "hardlink",
+        "sha256": "45b9c47fcb8dda7efa1db367dec7338065d9ba05cc37c9c437c3777b4a43d0b7",
+        "sha256_in_prefix": "45b9c47fcb8dda7efa1db367dec7338065d9ba05cc37c9c437c3777b4a43d0b7",
+        "size_in_bytes": 255
+      },
+      {
+        "_path": "lib/R/library/gsubfn/html/00Index.html",
+        "path_type": "hardlink",
+        "sha256": "0e7d5bb08dd13fe944c2d00767e4c42bbf8a14755921a4b3e97616981d1c1741",
+        "sha256_in_prefix": "0e7d5bb08dd13fe944c2d00767e4c42bbf8a14755921a4b3e97616981d1c1741",
+        "size_in_bytes": 3461
+      },
+      {
+        "_path": "lib/R/library/gsubfn/html/R.css",
+        "path_type": "hardlink",
+        "sha256": "52144cf4c349f7f2cf131342f81bbc43c6514ba2274556815df88918fdeb189b",
+        "sha256_in_prefix": "52144cf4c349f7f2cf131342f81bbc43c6514ba2274556815df88918fdeb189b",
+        "size_in_bytes": 1844
+      },
+      {
+        "_path": "lib/R/library/gsubfn/lipsum.txt",
+        "path_type": "hardlink",
+        "sha256": "631122f43816683c8acd443ef6ed8f9eaaca0df5e80150f42fe3971badbcd7c3",
+        "sha256_in_prefix": "631122f43816683c8acd443ef6ed8f9eaaca0df5e80150f42fe3971badbcd7c3",
+        "size_in_bytes": 448
+      },
+      {
+        "_path": "lib/R/library/gsubfn/sample.txt",
+        "path_type": "hardlink",
+        "sha256": "f9ba9ba24c6a5e0285881386edf2d37ad0acdbb7490a1a31c1b60f049f1f76aa",
+        "sha256_in_prefix": "f9ba9ba24c6a5e0285881386edf2d37ad0acdbb7490a1a31c1b60f049f1f76aa",
+        "size_in_bytes": 27476
+      },
+      {
+        "_path": "lib/R/library/gsubfn/unitTests/runit.all.R",
+        "path_type": "hardlink",
+        "sha256": "34fea97850e4e8b37a1af78f3e64870c90060811ddad3041f1301647660aa783",
+        "sha256_in_prefix": "34fea97850e4e8b37a1af78f3e64870c90060811ddad3041f1301647660aa783",
+        "size_in_bytes": 3202
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "r-gsubfn",
+  "sha256": "fe1fc11047c47700b8f11a009150d2677bb78ce8d1151b433b5f0c8233e32160",
+  "size": 366008,
+  "subdir": "noarch",
+  "timestamp": 1686943692000,
+  "track_features": "",
+  "url": "https://conda.anaconda.org/conda-forge/noarch/r-gsubfn-0.7-r43hc72bb7e_1004.conda",
+  "version": "0.7"
+}

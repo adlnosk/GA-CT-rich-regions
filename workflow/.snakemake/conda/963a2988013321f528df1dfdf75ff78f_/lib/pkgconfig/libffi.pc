@@ -1,0 +1,11 @@
+prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${libdir}
+includedir=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/963a2988013321f528df1dfdf75ff78f_/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.4.4
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

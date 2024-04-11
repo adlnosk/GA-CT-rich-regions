@@ -3,10 +3,10 @@ import os
 import numpy as np
 import gzip
 
+import sys
+print(sys.version)
 
 configfile: "../config/config.yaml"
-
-#localrules: name, name
 
 print (config['species'])
 
@@ -143,16 +143,22 @@ rule samtools_sort_raw:
     params:
         "-m 4G"
     threads: 8
+    conda:
+        "envs/samtools.yml"
+    threads: 4
     wrapper:
-        "https://github.com/snakemake/snakemake-wrappers/raw/0.2.0/bio/samtools/sort"
+        "v3.7.0/bio/samtools/sort"
         
 rule samtools_index_raw:
     input:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
     output:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai"
-    shell:
-        "https://github.com/snakemake/snakemake-wrappers/tree/0.2.0/bio/samtools/index"
+    conda:
+        "envs/samtools.yml"        
+    threads: 4
+    wrapper:
+        "v3.7.0/bio/samtools/index"
 
 ##############
 
@@ -194,7 +200,7 @@ rule plot_assembly_curves:
     input: 
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
-        aligned_reads=rules.minimap_raw.output,
+        aligned_reads=rules.samtools_sort_raw.output,
         aligned_reads_index=rules.samtools_index_raw.output,
         ref=get_assembly
     output:
@@ -207,4 +213,8 @@ rule plot_assembly_curves:
     	"envs/r.yml"
     script:
         "scripts/GACT_plot_coverages.R"
+
+
+
+
 

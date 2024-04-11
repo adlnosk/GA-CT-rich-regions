@@ -1,0 +1,42 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job                     count
+--------------------  -------
+GA_CT_assembly              1
+GA_CT_reads                 1
+all                         1
+plot_assembly_curves        1
+samtools_index_raw          1
+total                       5
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Apr 11 12:26:00 2024]
+localrule GA_CT_reads:
+    input: /work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    jobid: 3
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    wildcards: spec=Medicago_sativa
+    resources: tmpdir=/tmp
+
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 108:
+Command 'set -euo pipefail;  /usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/bin/python3 /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmp47xr70ap.GACT_reads.py' returned non-zero exit status 1.
+[Thu Apr 11 12:26:01 2024]
+Error in rule GA_CT_reads:
+    jobid: 3
+    input: /work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/6c07112a94dc2f9f200d9f4dc0aa77fa_
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-04-11T122600.016544.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

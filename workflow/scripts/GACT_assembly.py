@@ -28,26 +28,26 @@ for n, record in enumerate(SeqIO.parse(input_file_path, "fasta")):
         window = sequence[i:i+window_size]
         ga_count = window.count('G') + window.count('A')
         ct_count = window.count('C') + window.count('T')
-         ga_ratio = ga_count / window_size
-          ct_ratio = ct_count / window_size
-           if (ga_ratio > threshold or ct_ratio > threshold) and (end < (len(sequence)-window_size)):
-                i_min = start
-                w = 'yes'
-            elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > 10*window_size):
-                w = 'yes'
-                enriched_regions.append(
-                    (contig, start, end, end-start, sequence[start:end]))
-                # print((contig, start, end, end-start, sequence[start:end]))
-                i_min = i+(window_size // 2)
-            elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > 10*window_size):
-                w = 'no'
-                enriched_regions.append(
-                    (contig, start, end, end-start, sequence[start:end]))
-                # print((contig, start, end, end-start, sequence[start:end]))
-                i_min = i+(window_size // 2)
-            else:
-                w = 'no'
-                i_min = i+(window_size // 2)
+        ga_ratio = ga_count / window_size
+        ct_ratio = ct_count / window_size
+        if (ga_ratio > threshold or ct_ratio > threshold) and (end < (len(sequence)-window_size)):
+            i_min = start
+            w = 'yes'
+        elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > 10*window_size):
+            w = 'yes'
+            enriched_regions.append(
+                (contig, start, end, end-start, sequence[start:end]))
+            # print((contig, start, end, end-start, sequence[start:end]))
+            i_min = i+(window_size // 2)
+        elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > 10*window_size):
+            w = 'no'
+            enriched_regions.append(
+                (contig, start, end, end-start, sequence[start:end]))
+            # print((contig, start, end, end-start, sequence[start:end]))
+            i_min = i+(window_size // 2)
+        else:
+            w = 'no'
+            i_min = i+(window_size // 2)
 
 
 with open(output_file, "w") as f:

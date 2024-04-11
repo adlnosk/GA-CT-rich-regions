@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SQLite
+Description: SQL database engine
+Version: 3.41.2
+Libs: -L${libdir} -lsqlite3
+Libs.private: -lz -lm -ldl -lpthread 
+Cflags: -I${includedir}
