@@ -1,5 +1,0 @@
-#!/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/963a2988013321f528df1dfdf75ff78f_/bin/python3.12
-import sys
-from lib2to3.main import main
-
-sys.exit(main("lib2to3.fixes"))

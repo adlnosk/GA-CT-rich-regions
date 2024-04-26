@@ -1,0 +1,56 @@
+Building DAG of jobs...
+Building DAG of jobs...
+Creating conda environment envs/samtools.yml...
+Downloading and installing remote packages.
+CreateCondaEnvironmentException:
+Could not create conda environment from /work/project/briefwp3/Adela/GA_CT/workflow/envs/samtools.yml:
+Command:
+mamba env create --quiet --file "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/958a318bcd8d4f9307db62023f87a4c7_.yaml" --prefix "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/958a318bcd8d4f9307db62023f87a4c7_"
+Output:
+Retrieving notices: ...working... done
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/47929eba.json" was modified by another program
+warning  libmamba Cache file "/home/apoublan/.conda/pkgs/cache/47929eba.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/3e39a7aa.json" was modified by another program
+warning  libmamba Cache file "/home/apoublan/.conda/pkgs/cache/3e39a7aa.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/2ce54b42.json" was modified by another program
+warning  libmamba Cache file "/home/apoublan/.conda/pkgs/cache/2ce54b42.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/4ea078d6.json" was modified by another program
+warning  libmamba Cache file "/home/apoublan/.conda/pkgs/cache/4ea078d6.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/497deca9.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/09cdf8bf.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/ffeee55f.json" was modified by another program
+error    libmamba Could not open lockfile '/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/cache.lock'
+warning  libmamba Cache file "/usr/local/bioinfo/src/Miniconda/Miniconda3/pkgs/cache/2a957770.json" was modified by another program
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+warning  libmamba Problem type not implemented SOLVER_RULE_STRICT_REPO_PRIORITY
+Could not solve for environment specs
+The following package could not be installed
+└─ samtools 1.19**  is uninstallable because it requires
+   └─ libgcc-ng >=12 , which conflicts with any installable versions previously reported.
+
+3.11.1 (main, Apr  4 2023, 06:41:41) [GCC 8.5.0 20210514 (Red Hat 8.5.0-10)]
+['Medicago_sativa', 'Diplocyclos_palmidus', 'Dactylis_glomerata']

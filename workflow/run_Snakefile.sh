@@ -5,6 +5,8 @@
 module purge
 module load bioinfo/Snakemake/7.20.0
 file="report/dag-$(date +'%d-%m-%Y').pdf"
+snakemake --unlock
+
 snakemake --dag | tail -n+3 | dot -Tpdf > $file
 
 module unload bioinfo/Snakemake/7.20.0
@@ -14,8 +16,10 @@ conda config --set channel_priority strict
 
 module load bioinfo/Snakemake/8.3.1
 
+snakemake -s Snakefile --software-deployment-method conda --cores 10 --jobs 100 --rerun-incomplete --use-conda
 
-snakemake -s Snakefile --software-deployment-method conda --cores --jobs 100 --rerun-incomplete --use-conda
+# can be equally used with cluster modules as: snakemake --use-envmodules (both are included)
+# snakemake -s Snakefile --cores 10 --jobs 100 --rerun-incomplete --use-envmodules
 
 
 # target command line if using profile:

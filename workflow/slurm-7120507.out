@@ -1,0 +1,256 @@
+Unlocking working directory.
+3.11.1 (main, Apr  4 2023, 06:41:41) [GCC 8.5.0 20210514 (Red Hat 8.5.0-10)]
+['Medicago_sativa', 'Diplocyclos_palmidus', 'Dactylis_glomerata']
+Building DAG of jobs...
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+GA_CT_fail_reads            3
+GA_CT_reads                 2
+all                         1
+make_fastq_fail             3
+minimap_fail                3
+minimap_raw                 2
+plot_assembly_curves        3
+plot_fail_curves            3
+samtools_index_fail         3
+samtools_index_raw          2
+samtools_sort_fail          3
+samtools_sort_raw           2
+zip_fastq_fail              3
+total                      33
+
+Select jobs to execute...
+Execute 8 jobs...
+
+[Wed Apr 24 13:52:40 2024]
+localrule GA_CT_reads:
+    input: /work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Diplocyclos_palmidus_GACT_raw_reads.txt
+    jobid: 9
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Diplocyclos_palmidus_GACT_raw_reads.txt
+    wildcards: spec=Diplocyclos_palmidus
+    resources: tmpdir=/tmp
+
+[Wed Apr 24 13:52:40 2024]
+localrule GA_CT_reads:
+    input: /work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/Dactylis_glomerata_GACT_raw_reads.txt
+    jobid: 15
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Dactylis_glomerata_GACT_raw_reads.txt
+    wildcards: spec=Dactylis_glomerata
+    resources: tmpdir=/tmp
+
+[Wed Apr 24 13:52:40 2024]
+localrule minimap_raw:
+    input: /work/project/briefwp3/Adela/Diplocyclos_palmidus/downsampled_ass/Diplocyclos_palmidus.asm.bp.p_ctg.fa, /work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_raw.bam
+    jobid: 11
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_raw.bam
+    wildcards: spec=Diplocyclos_palmidus
+    threads: 5
+    resources: tmpdir=/tmp
+
+
+[Wed Apr 24 13:52:40 2024]
+localrule minimap_raw:
+    input: /work/project/briefwp3/Adela/Dactylis_glomerata/assembly/Dactylis_glomerata.asm.bp.p_ctg.fa, /work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_raw.bam
+    jobid: 17
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_raw.bam
+    wildcards: spec=Dactylis_glomerata
+    threads: 5
+    resources: tmpdir=/tmp
+
+
+[Wed Apr 24 13:52:40 2024]
+localrule make_fastq_fail:
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DIPAL_GENOME/r84087_20231011_153509/1_C01/fail_reads/m84087_231011_164406_s3.fail_reads.default.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_fail.fq
+    jobid: 29
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_fail.fq
+    wildcards: spec=Diplocyclos_palmidus
+    threads: 3
+    resources: tmpdir=/tmp
+
+[Wed Apr 24 13:52:40 2024]
+localrule make_fastq_fail:
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DAGLO_LUKIR/r84087_20231220_162434/1_C01/fail_reads/m84087_231220_203121_s3.fail_reads.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_fail.fq
+    jobid: 36
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_fail.fq
+    wildcards: spec=Dactylis_glomerata
+    threads: 3
+    resources: tmpdir=/tmp
+
+[Wed Apr 24 13:52:40 2024]
+localrule make_fastq_fail:
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_MESAT_MILKYMAX/r84087_20231102_141650/1_A01/fail_reads/m84087_231102_142501_s1.fail_reads.default.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_fail.fq
+    jobid: 22
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_fail.fq
+    wildcards: spec=Medicago_sativa
+    threads: 3
+    resources: tmpdir=/tmp
+
+[Wed Apr 24 13:52:40 2024]
+localrule plot_assembly_curves:
+    input: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt, /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt, /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw_sorted.bam, /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw_sorted.bam.bai, /work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.pdf
+    jobid: 1
+    reason: Missing output files: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.pdf
+    wildcards: spec=Medicago_sativa
+    resources: tmpdir=/tmp
+
+/usr/bin/bash: line 1: minimap2: command not found
+[Wed Apr 24 13:52:40 2024]
+Error in rule minimap_raw:
+    jobid: 11
+    input: /work/project/briefwp3/Adela/Diplocyclos_palmidus/downsampled_ass/Diplocyclos_palmidus.asm.bp.p_ctg.fa, /work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_raw.bam
+    shell:
+        
+        minimap2 -L -x map-hifi -a /work/project/briefwp3/Adela/Diplocyclos_palmidus/downsampled_ass/Diplocyclos_palmidus.asm.bp.p_ctg.fa /work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz -t 5 -o /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_raw.bam
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+/usr/bin/bash: line 1: minimap2: command not found
+[Wed Apr 24 13:52:40 2024]
+Error in rule minimap_raw:
+    jobid: 17
+    input: /work/project/briefwp3/Adela/Dactylis_glomerata/assembly/Dactylis_glomerata.asm.bp.p_ctg.fa, /work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_raw.bam
+    shell:
+        
+        minimap2 -L -x map-hifi -a /work/project/briefwp3/Adela/Dactylis_glomerata/assembly/Dactylis_glomerata.asm.bp.p_ctg.fa /work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz -t 5 -o /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_raw.bam
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Activating conda environment: .snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Activating conda environment: .snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+Activating conda environment: .snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+Activating conda environment: .snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+Activating conda environment: .snakemake/conda/963a2988013321f528df1dfdf75ff78f_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Activating conda environment: .snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+Traceback (most recent call last):
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpeki7jz_4.wrapper.py", line 34, in <module>
+Traceback (most recent call last):
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpml8oa6ws.wrapper.py", line 34, in <module>
+    shell(
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/shell.py", line 135, in __new__
+    shell(
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/shell.py", line 135, in __new__
+    cmd = format(cmd, *args, stepout=2, **kwargs)
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/utils.py", line 427, in format
+    cmd = format(cmd, *args, stepout=2, **kwargs)
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/utils.py", line 427, in format
+    return fmt.format(_pattern, *args, **variables)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 161, in format
+    return fmt.format(_pattern, *args, **variables)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 161, in format
+    return self.vformat(format_string, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 165, in vformat
+    return self.vformat(format_string, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 165, in vformat
+    result, _ = self._vformat(format_string, args, kwargs, used_args, 2)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 205, in _vformat
+    result, _ = self._vformat(format_string, args, kwargs, used_args, 2)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 205, in _vformat
+    obj, arg_used = self.get_field(field_name, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 278, in get_field
+    obj, arg_used = self.get_field(field_name, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 278, in get_field
+    obj = obj[i]
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/io.py", line 1636, in __getitem__
+    obj = obj[i]
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/io.py", line 1636, in __getitem__
+    return super().__getitem__(key)
+IndexError: list index out of range
+    return super().__getitem__(key)
+IndexError: list index out of range
+Error: object 'spec' not found
+Execution halted
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 66:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_'; set -euo pipefail;  python /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpeki7jz_4.wrapper.py' returned non-zero exit status 1.
+[Wed Apr 24 13:52:59 2024]
+Error in rule make_fastq_fail:
+    jobid: 29
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DIPAL_GENOME/r84087_20231011_153509/1_C01/fail_reads/m84087_231011_164406_s3.fail_reads.default.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_fail.fq
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 66:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_'; set -euo pipefail;  python /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpml8oa6ws.wrapper.py' returned non-zero exit status 1.
+[Wed Apr 24 13:53:05 2024]
+Error in rule make_fastq_fail:
+    jobid: 22
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_MESAT_MILKYMAX/r84087_20231102_141650/1_A01/fail_reads/m84087_231102_142501_s1.fail_reads.default.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_fail.fq
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+
+Traceback (most recent call last):
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmp9o73d0ir.wrapper.py", line 34, in <module>
+    shell(
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/shell.py", line 135, in __new__
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 213:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_'; set -euo pipefail;  Rscript --vanilla /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmpk1a20ac6.GACT_plot_coverages.R' returned non-zero exit status 1.
+[Wed Apr 24 13:53:05 2024]
+Error in rule plot_assembly_curves:
+    jobid: 1
+    input: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt, /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt, /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw_sorted.bam, /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Medicago_sativa_raw_sorted.bam.bai, /work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa
+    output: /work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.pdf
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/0b3509f4080e20e9d532b102ba096ec3_
+
+    cmd = format(cmd, *args, stepout=2, **kwargs)
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/utils.py", line 427, in format
+    return fmt.format(_pattern, *args, **variables)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 161, in format
+    return self.vformat(format_string, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 165, in vformat
+    result, _ = self._vformat(format_string, args, kwargs, used_args, 2)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 205, in _vformat
+    obj, arg_used = self.get_field(field_name, args, kwargs)
+  File "/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_/lib/python3.10/string.py", line 278, in get_field
+    obj = obj[i]
+  File "/usr/local/bioinfo/src/Snakemake/snakemake-v8.3.1/snakemake-v8.3.1_venv/lib/python3.11/site-packages/snakemake/io.py", line 1636, in __getitem__
+    return super().__getitem__(key)
+IndexError: list index out of range
+RuleException:
+CalledProcessError in file /work/project/briefwp3/Adela/GA_CT/workflow/Snakefile, line 66:
+Command 'source /usr/local/bioinfo/src/Miniconda/Miniconda3/bin/activate '/work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_'; set -euo pipefail;  python /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/scripts/tmp9o73d0ir.wrapper.py' returned non-zero exit status 1.
+[Wed Apr 24 13:53:05 2024]
+Error in rule make_fastq_fail:
+    jobid: 36
+    input: /save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DAGLO_LUKIR/r84087_20231220_162434/1_C01/fail_reads/m84087_231220_203121_s3.fail_reads.bam
+    output: /work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Dactylis_glomerata_fail.fq
+    conda-env: /work/project/briefwp3/Adela/GA_CT/workflow/.snakemake/conda/675ca68b850a95df83f2a1593e9734d6_
+
+3.12.2 | packaged by Anaconda, Inc. | (main, Feb 27 2024, 17:35:02) [GCC 11.2.0]
+/work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz
+[Wed Apr 24 19:18:02 2024]
+Finished job 15.
+1 of 33 steps (3%) done
+3.12.2 | packaged by Anaconda, Inc. | (main, Feb 27 2024, 17:35:02) [GCC 11.2.0]
+/work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz
+[Wed Apr 24 19:55:50 2024]
+Finished job 9.
+2 of 33 steps (6%) done
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-04-24T135220.758830.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
+3.11.1 (main, Apr  4 2023, 06:41:41) [GCC 8.5.0 20210514 (Red Hat 8.5.0-10)]
+['Medicago_sativa', 'Diplocyclos_palmidus', 'Dactylis_glomerata']

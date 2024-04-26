@@ -41,8 +41,8 @@ rule all:
 #        expand (OUT_DIR + "/{spec}_GACT_fail_reads.txt", spec=config['species']),
 #		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
 #        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
-        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species'])
-#        expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
+        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
+	expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
         
 #        which_analysis()
           
@@ -71,9 +71,10 @@ rule zip_fastq_fail:
     output:
     	OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
     threads: 5
+    envmodules:
+        "devel/pigz/2.8"
     shell:
     	"""
-    	module load devel/pigz/2.8
     	pigz -p 5 {input} -o {output}
     	"""
 """
@@ -129,9 +130,10 @@ rule minimap_raw:
     output:
     	OUT_DIR + "/mapped_reads/{spec}_raw.bam"
     threads: 5
+    envmodules:
+        "bioinfo/Minimap/2-2.26"
     shell:
         """
-        module load bioinfo/Minimap/2-2.26
         minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
         """
         	
@@ -143,9 +145,6 @@ rule samtools_sort_raw:
     params:
         "-m 4G"
     threads: 8
-    conda:
-        "envs/samtools.yml"
-    threads: 4
     wrapper:
         "v3.7.0/bio/samtools/sort"
         
@@ -154,8 +153,6 @@ rule samtools_index_raw:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
     output:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai"
-    conda:
-        "envs/samtools.yml"        
     threads: 4
     wrapper:
         "v3.7.0/bio/samtools/index"
@@ -169,9 +166,10 @@ rule minimap_fail:
     output:
     	OUT_DIR + "/mapped_reads/{spec}_fail.bam"
     threads: 5
+    envmodules:
+        "bioinfo/Minimap/2-2.26"
     shell:
         """
-        module load bioinfo/Minimap/2-2.26
         minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
         """
         	
@@ -214,7 +212,23 @@ rule plot_assembly_curves:
     script:
         "scripts/GACT_plot_coverages.R"
 
-
+rule plot_fail_curves:
+    input:
+        ass_regions=rules.GA_CT_assembly.output,
+        reads_regions=rules.GA_CT_fail_reads.output,
+        aligned_reads=rules.samtools_sort_fail.output,
+        aligned_reads_index=rules.samtools_index_fail.output,
+        ref=get_assembly
+    output:
+        plot=OUT_DIR + "/{spec}_GACT_fail_reads.pdf"
+    params:
+        depth_prefix=r"{spec}_ass_regions_flank",
+        species=r"{spec}",
+        plotting_flank=10000
+    conda:
+        "envs/r.yml"
+    script:
+        "scripts/GACT_plot_coverages.R"
 
 
 
