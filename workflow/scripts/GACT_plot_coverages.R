@@ -3,7 +3,8 @@
 # Plot coverage curves, groupped by lengths, use samtools depth
 
 ########################################
-## script.R
+## GACT_plot_coverages.R
+# used in rules: plot_assembly_curves, plot_fail_curves 
 # pass arguments
 
 setwd(paste0("/work/project/briefwp3/Adela/", spec, "/assembly/GA_CT"))
@@ -17,6 +18,10 @@ sam = snakemake@input[["aligned_reads"]]
 ref = snakemake@input[["ref"]]
 
 plotfile=snakemake@output[["plot"]]
+plot_ends=snakemake@output[["plot_ends"]]
+
+table=snakemake@output[["table"]]
+
 outdepth=snakemake@params[["depth_prefix"]]
 
 # load libraries
@@ -77,16 +82,18 @@ df_half_down <- df_ofa %>% group_by(wID) %>% mutate(pos = row_number()) %>% filt
 table(df_half_down[,c("wID","length")])
 hdlist <- unique(df_half_down[,"window_ID"])
 
-pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks_down.pdf"),width=13.8, height=7.31)
+pdf(plot_ends,width=13.8, height=7.31)
+
+# pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks_down.pdf"),width=13.8, height=7.31)
 ggplot(df_half_down, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + xlim(0,20000) + theme_minimal() + facet_wrap(~length) + theme(legend.position="none")
-dev.off()
+#dev.off()
 
 # regions at contig ends (shorter than 20 000, ascending DP)
 df_half_up <- df_ofa %>% group_by(wID) %>% mutate(pos = row_number()) %>% filter(max(pos) < 15000 ) %>% filter(first(DP) < last(DP) ) %>% mutate(pos2  = row_number() )
 table(df_half_up[,c("wID","length")])
 hulist <- unique(df_half_up[,"window_ID"])
 
-pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks_up.pdf"),width=13.8, height=7.31)
+#pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks_up.pdf"),width=13.8, height=7.31)
 ggplot(df_half_up, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + xlim(0,20000) + theme_minimal() + facet_wrap(~length) + theme(legend.position="none")
 dev.off()
 
@@ -103,20 +110,19 @@ df3 <- df2 %>% group_by(wID) %>% mutate(DP_norm = (DP / max(DP)) * 100)
 mu <- mean(df2$DP)
 sd <- sd(df2$DP)
 df2$zscore <- (df2$DP-mu)/sd
-#df2 %>%  ggplot( aes(x=pos2, y=DP, group=length, color=length)) + geom_point()
-#df2 %>%  ggplot( aes(x=pos2, y=DP, group=length, color=length)) + geom_line() + theme_minimal() + scale_colour_gradientn(colours=rainbow(5))
 
 # pdf("facet_sizes_fa200_10flanks.pdf", width=13.8, height=7.31)
-pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.pdf"),width=13.8, height=7.31)
+#pdf(paste0("/home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.pdf"),width=13.8, height=7.31)
 
+pdf(plotfile, width=13.8, height=7.31)
 ggplot(df3, aes(x=pos2, y=DP_norm, group=wID, color=wID)) + geom_line() + theme_minimal() + facet_wrap(~length) + theme(legend.position="none") + scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
 ggplot(df3, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + theme_minimal() + facet_wrap(~length) + theme(legend.position="none") + scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
 
 dev.off()
 
-write.table(df3, "plot_depths_fa0_10flanks.txt", col.names=T, row.names=F, quote=F)
+write.table(df3, table, col.names=T, row.names=F, quote=F)
 
-system(paste0("convert /home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.pdf /home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.png"), intern = TRUE)
+# system(paste0("convert /home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.pdf /home/apoublan/public_html/reports/results/GA_CT_regions/",spec,"_facet_sizes_fa0_10flanks.png"), intern = TRUE)
 
 
 
