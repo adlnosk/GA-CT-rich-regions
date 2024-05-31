@@ -1,0 +1,10 @@
+__use_yte__: true
+executor: slurm
+latency-wait: 60
+default-storage-provider: fs
+shared-fs-usage:
+  - persistence
+  - software-deployment
+  - sources
+  - source-cache
+local-storage-prefix: "/work/project/briefwp3/Adela/GA_CT/workflow/scratch"

@@ -7,8 +7,6 @@
 # used in rules: plot_assembly_curves, plot_fail_curves 
 # pass arguments
 
-setwd(paste0("/work/project/briefwp3/Adela/", spec, "/assembly/GA_CT"))
-
 spec = snakemake@params[["species"]]
 flank = snakemake@params[["plotting_flank"]]
 
@@ -30,7 +28,7 @@ library(ggplot2)
 
 # FASTA table
 fa <- read.table(fa_file)
-colnames(fa)<-c("readID", "contigID", "window_start", "window_end", "length", "sequence")
+colnames(fa)<-c("contigID", "window_start", "window_end", "length", "sequence")
 fa$window_ID <- paste0(fa$contigID,"_", fa$window_start,"_", fa$window_end,"_", fa$sequence)
 
 print(table(fa$length))

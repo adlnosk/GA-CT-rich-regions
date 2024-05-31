@@ -1,0 +1,16 @@
+default-resources:
+    slurm_partition: "workp"
+    slurm_account:   "apoublan"
+    runtime: 60
+    mem_mb_per_cpu: 20G
+    cpus_per_task: 1
+
+
+set-resources:
+    random_rule:
+        slurm_partition: "unlimitq" # deviating partition for this rule
+        runtime: 96:00:00 # 1 hour
+        mem_mb_per_cpu: 1800
+        cpus_per_task: 4
+
+

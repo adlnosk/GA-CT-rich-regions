@@ -42,7 +42,8 @@ rule all:
 #		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
 #        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
         expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
-	expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species'])
+	expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species']),
+        expand (OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf", spec=config['species'])
         
 #        which_analysis()
           
@@ -55,15 +56,14 @@ Prepare input files
 # FAIL READS into FASTQ
 rule make_fastq_fail:
     input:
-        get_fail_reads
+        get_fail_reads # 1 bam file
     output:
-    	OUT_DIR + "/mapped_reads/{spec}_fail.fq"
+    	OUT_DIR + "/mapped_reads/{spec}_fail.fq" # 1 interleaved fq file
     params:
-        sort="-m 4G",
-        fastq="-n"
+        " "
     threads: 3
     wrapper:
-        "v3.10.2/bio/samtools/fastq/separate"
+        "v3.10.2/bio/samtools/fastq/interleaved"
 
 rule zip_fastq_fail:
     input:
@@ -75,13 +75,11 @@ rule zip_fastq_fail:
         "devel/pigz/2.8"
     shell:
     	"""
-    	pigz -p 5 {input} -o {output}
+    	pigz -p 5 {input} > {output}
     	"""
-"""
-Detect regions rich in GA or CT (in sliding windows, above threshold)
-"""
 
-# GACT in ASSEMBLY, RAW READS, and FAIL reads - TODO output .bed files instead?
+# Get GA/CT rich regions in the assembly, RAW reads and in the FAIL reads
+
 rule GA_CT_assembly:
     input: 
         fasta_file=get_assembly
@@ -123,31 +121,19 @@ rule GA_CT_fail_reads:
 
 ############## map raw and failed reads
 
-rule minimap_raw:
+rule minimap_raw_sort:
     input:
-        ref=get_assembly,
-        raw_reads=get_fastq
-    output:
-    	OUT_DIR + "/mapped_reads/{spec}_raw.bam"
-    threads: 5
-    envmodules:
-        "bioinfo/Minimap/2-2.28"
-    shell:
-        """
-        minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
-        """
-        	
-rule samtools_sort_raw:
-    input:
-        OUT_DIR + "/mapped_reads/{spec}_raw.bam"
+        target=get_assembly,
+        query=get_fastq # or get_raw_reads in BAM
     output:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
+    threads: 6
     params:
-        "-m 4G"
-    threads: 8
+        extra="-x map-hifi",  # optional
+        sorting="coordinate"  # optional: Enable sorting. Possible values: 'none', 'queryname' or 'coordinate'
     wrapper:
-        "v3.7.0/bio/samtools/sort"
-        
+        "v3.10.2/bio/minimap2/aligner"
+
 rule samtools_index_raw:
     input:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
@@ -162,65 +148,36 @@ rule samtools_index_raw:
 
 # Wrapper for Minimap bam sorted:
  
-rule minimap_fail:
+rule minimap_fail_sort:
     input:
-        ref=get_assembly,
-        raw_reads=rules.zip_fastq_fail.output
+        target=get_assembly,
+        query=rules.zip_fastq_fail.output
     output:
         OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
-    threads: 3
+    threads: 6
     params:
         extra="-x map-hifi",  # optional
         sorting="coordinate",  # optional: Enable sorting. Possible values: 'none', 'queryname' or 'coordinate'
         sort_extra="",  # optional: extra arguments for samtools/picard
-    threads: 3
     wrapper:
         "v3.10.2/bio/minimap2/aligner"
 
-
-""" 
-rule minimap_fail:
-    input:
-        ref=get_assembly,
-        raw_reads=rules.zip_fastq_fail.output
-    output:
-    	OUT_DIR + "/mapped_reads/{spec}_fail.bam"
-    threads: 5
-    envmodules:
-        "bioinfo/Minimap/2-2.28"
-    shell:
-        """
-        minimap2 -L -x map-hifi -a {input.ref} {input.raw_reads} -t {threads} -o {output}
-        """
-        	
-rule samtools_sort_fail:
-    input:
-        OUT_DIR + "/mapped_reads/{spec}_fail.bam"
-    output:
-        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
-    params:
-        "-m 4G"
-    threads: 8
-    wrapper:
-        "https://github.com/snakemake/snakemake-wrappers/raw/0.2.0/bio/samtools/sort"
-        
 rule samtools_index_fail:
     input:
         OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
     output:
         OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai"
-    shell:
-        "https://github.com/snakemake/snakemake-wrappers/tree/0.2.0/bio/samtools/index"
-""" 
+    threads: 3
+    wrapper:
+        "v3.7.0/bio/samtools/index"
 
-
-## plot coverage curves
+## plot coverage curve (main reads + ends into /extra/), write also the plotting table into /extra/
 
 rule plot_assembly_curves:
     input: 
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
-        aligned_reads=rules.samtools_sort_raw.output,
+        aligned_reads=rules.minimap_raw_sort.output,
         aligned_reads_index=rules.samtools_index_raw.output,
         ref=get_assembly
     output:
@@ -238,7 +195,7 @@ rule plot_fail_curves:
     input:
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_fail_reads.output,
-        aligned_reads=rules.samtools_sort_fail.output,
+        aligned_reads=rules.minimap_fail_sort.output,
         aligned_reads_index=rules.samtools_index_fail.output,
         ref=get_assembly
     output:
@@ -252,5 +209,50 @@ rule plot_fail_curves:
     script:
         "scripts/GACT_plot_coverages.R"
 
+# analyse multimapped reads
 
+rule multimapped:
+    input:
+        ass_regions=rules.GA_CT_assembly.output,
+        reads_regions=rules.GA_CT_reads.output,
+        aligned_reads=rules.minimap_raw_sort.output,
+        aligned_reads_index=rules.samtools_index_raw.output,
+        ref=get_assembly
+    output:
+        multimapped_reads=OUT_DIR + "/multimapped/{spec}_mm_reads.txt", #intermediate file with filtered reads
+        targets=OUT_DIR + "/multimapped/{spec}_mm_targets_withCIGAR.txt", #table with multimapped reads potential for scaffolding
+        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
+    params:
+        depth_prefix=r"{spec}_ass_regions_flank",
+        species=r"{spec}",
+        plotting_flank=10000
+    conda:
+        "envs/r.yml"
+    script:
+        "scripts/GACT_multimapped.R"
+
+# process locs and run IGV
+
+rule make_IGV_shots_multimapped:
+    input:
+        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
+    output:
+        plots=OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf" #for IGV shots
+    params:
+        ref=get_assembly,
+        path=OUT_DIR + "/multimapped/shots/{spec}/"
+    shell:
+        """
+        cd {params.path}
+        mv {input.locs} temp
+        (echo -e new\\n\
+        genome {params.ref}\\n\
+        snapshotDirectory {params.path}\\n\
+        load {input.bam}\\n ; cat temp ; echo exit) > locs
+        rm temp
+        module load devel/java/17.0.6 bioinfo/IGV/2.16.1; igv.sh -b locs
+        convert *png {output.plots}
+        """
+
+# analyse bridging reads
 

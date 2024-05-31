@@ -1,8 +1,8 @@
 ---
 species:
 - Medicago_sativa
-  #- Diplocyclos_palmidus
-  #- Dactylis_glomerata
+- Diplocyclos_palmidus
+- Dactylis_glomerata
 
 raw_reads:
   Medicago_sativa: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_MESAT_MILKYMAX/r84087_20231102_141650/1_A01/hifi_reads/m84087_231102_142501_s1.hifi_reads.default.bam"
