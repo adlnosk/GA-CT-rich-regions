@@ -1,0 +1,40 @@
+---
+species:
+- Medicago_sativa
+- Diplocyclos_palmidus
+- Dactylis_glomerata
+
+raw_reads:
+  Medicago_sativa: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_MESAT_MILKYMAX/r84087_20231102_141650/1_A01/hifi_reads/m84087_231102_142501_s1.hifi_reads.default.bam"
+  Diplocyclos_palmidus: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DIPAL_****/r84087_20231011_153509/1_C01/hifi_reads/m84087_231011_164406_s3.hifi_reads.default.bam"
+  Dactylis_glomerata: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DAGLO_LUKIR/r84087_20231220_162434/1_C01/hifi_reads/m84087_231220_203121_s3.hifi_reads.bam"
+
+assembly:
+  Medicago_sativa: "/work/project/briefwp3/Adela/Medicago_sativa/assembly/Medicago_sativa.asm.bp.p_ctg.fa"
+  Diplocyclos_palmidus: "/work/project/briefwp3/Adela/Diplocyclos_palmidus/downsampled_ass/Diplocyclos_palmidus.asm.bp.p_ctg.fa"
+  Dactylis_glomerata: "/work/project/briefwp3/Adela/Dactylis_glomerata/assembly/Dactylis_glomerata.asm.bp.p_ctg.fa"
+
+fastq:
+  Medicago_sativa: "/work/project/briefwp3/Adela/Medicago_sativa/fastq_file/Medicago_sativa1.fastq.gz"
+  Diplocyclos_palmidus: "/work/project/briefwp3/Adela/Diplocyclos_palmidus/fastq_file/Diplocyclos_palmidus.fastq.gz"
+  Dactylis_glomerata: "/work/project/briefwp3/Adela/Dactylis_glomerata/fastq_file/Dactylis_glomerata.fastq.gz"
+
+fail_reads:
+  Medicago_sativa: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_MESAT_MILKYMAX/r84087_20231102_141650/1_A01/fail_reads/m84087_231102_142501_s1.fail_reads.default.bam"
+  Diplocyclos_palmidus: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DIPAL_GENOME/r84087_20231011_153509/1_C01/fail_reads/m84087_231011_164406_s3.fail_reads.default.bam"
+  Dactylis_glomerata: "/save/project/pepr_agroeco/WP1-WP2/FORAGE/AGRODIV_DAGLO_LUKIR/r84087_20231220_162434/1_C01/fail_reads/m84087_231220_203121_s3.fail_reads.bam"
+
+## Optional parts of the workflow
+
+# Detect GACT regions in assembly
+GACT_assembly: 'True'
+
+# Detect GACT regions in fail reads
+GACT_fail: 'True'
+
+# Analyse multimapped reads
+GACT_multimapped: 'True'
+
+# Analyse bridging reads
+GACT_bridging: 'True'
+

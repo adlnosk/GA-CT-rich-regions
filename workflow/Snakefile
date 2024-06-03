@@ -6,7 +6,7 @@ import gzip
 import sys
 print(sys.version)
 
-configfile: "../config/config.yaml"
+configfile: "../config/config_paths.yaml"
 
 print (config['species'])
 
