@@ -2,15 +2,13 @@ cluster:
   mkdir -p logs/{rule} &&
   sbatch
     --partition={resources.partition}
-    --qos={resources.qos}
     --cpus-per-task={threads}
     --mem={resources.mem_mb}
     --job-name=smk-{rule}-{wildcards}
     --output=logs/{rule}/{rule}-{wildcards}-%j.out
 default-resources:
   - partition=workq
-  - qos=12:00:00
-  - mem_mb=5000
+  - mem_mb=20000
 restart-times: 3
 max-jobs-per-second: 10
 max-status-checks-per-second: 1
@@ -22,3 +20,6 @@ rerun-incomplete: True
 printshellcmds: True
 scheduler: greedy
 use-conda: True
+# from here https://github.com/jdblischak/smk-simple-slurm
+
+

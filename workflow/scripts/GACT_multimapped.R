@@ -22,6 +22,11 @@ locs_out = snakemake@output[["locs"]]
 targets_out = snakemake@output[["targets"]]
 multimapped_txt = snakemake@output[["multimapped_reads"]]
 
+
+path=snakemake@params[["path"]]
+setwd(path)
+
+
 # load libraries
 library(dplyr)
 library(ggplot2)
@@ -40,7 +45,7 @@ system(paste0("module load bioinfo/samtools/1.19; samtools view -F 0x104 ", sam 
 
 fq <- read.table(fq_file)
 colnames(fq)<-c("readID", "window_start", "window_end", "length", "sequence")
-a <- fa[,c("readID", "window_start", "window_end", "sequence")]
+a <- fq[,c("readID", "window_start", "window_end", "sequence")]
 
 b <- read.table(multimapped_txt, h=F)
 colnames(b) <- c("readID", "FLAG", "contigID", "contig_start", "CIGAR", "read_len")
@@ -97,7 +102,11 @@ out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into num
 out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
 locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
 locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID"], "_", out[,"contigID"], ".png\n")
+head(locs)
+dim(locs)
 write.table(locs, locs_out, col.names=F, row.names=F, quote=F)
+
+print("END OF SCRIPT")
 
 ############################################
 

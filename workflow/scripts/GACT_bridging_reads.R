@@ -3,6 +3,13 @@
 
 # spec = "Medicago_sativa"
 
+
+
+path=snakemake@params[["path"]]
+setwd(path)
+
+
+
 # pass arguments
 args < - commandArgs(trailingOnly=TRUE)
 print(args[1])

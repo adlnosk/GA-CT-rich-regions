@@ -54,29 +54,18 @@ Prepare input files
 """
 
 # FAIL READS into FASTQ
-rule make_fastq_fail:
+rule zip_fastq_fail:
     input:
         get_fail_reads # 1 bam file
     output:
-    	OUT_DIR + "/mapped_reads/{spec}_fail.fq" # 1 interleaved fq file
-    params:
-        " "
-    threads: 3
-    wrapper:
-        "v3.10.2/bio/samtools/fastq/interleaved"
-
-rule zip_fastq_fail:
-    input:
-        OUT_DIR + "/mapped_reads/{spec}_fail.fq"
-    output:
-    	OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
+        OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
     threads: 5
-    envmodules:
-        "devel/pigz/2.8"
+    resources: 
+        mem_mb=50000
     shell:
-    	"""
-    	pigz -p 5 {input} > {output}
-    	"""
+        """
+        module load bioinfo/samtools/1.19; module load devel/pigz/2.8; samtools sort -@ 5 -n {input} | samtools fastq --threads 5 | pigz -f -p 5 > {output}
+        """
 
 # Get GA/CT rich regions in the assembly, RAW reads and in the FAIL reads
 
@@ -185,9 +174,12 @@ rule plot_assembly_curves:
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
     	species=r"{spec}",
-    	plotting_flank=10000
+    	plotting_flank=10000,
+        path=OUT_DIR
     conda: 
     	"envs/r.yml"
+    resources:
+        mem_mb=50000
     script:
         "scripts/GACT_plot_coverages.R"
 
@@ -203,7 +195,10 @@ rule plot_fail_curves:
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
         species=r"{spec}",
-        plotting_flank=10000
+        plotting_flank=10000,
+        path=OUT_DIR
+    resources:
+        mem_mb=50000
     conda:
         "envs/r.yml"
     script:
@@ -225,7 +220,10 @@ rule multimapped:
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
         species=r"{spec}",
-        plotting_flank=10000
+        plotting_flank=10000,
+        path=OUT_DIR
+    resources:
+        mem_mb=50000
     conda:
         "envs/r.yml"
     script:
@@ -235,14 +233,18 @@ rule multimapped:
 
 rule make_IGV_shots_multimapped:
     input:
-        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
+        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt", #for IGV shots
+        bam=rules.minimap_raw_sort.output
     output:
         plots=OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf" #for IGV shots
     params:
         ref=get_assembly,
         path=OUT_DIR + "/multimapped/shots/{spec}/"
+    resources:
+        mem_mb=50000
     shell:
         """
+        mkdir -p {params.path}
         cd {params.path}
         mv {input.locs} temp
         (echo -e new\\n\

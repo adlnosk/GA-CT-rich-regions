@@ -22,6 +22,11 @@ table=snakemake@output[["table"]]
 
 outdepth=snakemake@params[["depth_prefix"]]
 
+
+path=snakemake@params[["path"]]
+setwd(path)
+
+
 # load libraries
 library(dplyr)
 library(ggplot2)
