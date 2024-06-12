@@ -1,63 +1,44 @@
-##################### reads vs contigs ###############
-# spec = "Dactylis_glomerata"
+# script to get reads that are bridging the GA/CT regions (aligning on both sides)
 
-# spec = "Medicago_sativa"
+fa_file = snakemake@input[["ass_regions"]]
+fq_file = snakemake@input[["reads_regions"]]
+multimapped_txt = snakemake@input[["multimapped_reads"]]
 
-
+plot_out = snakemake@output[["plot"]]
 
 path=snakemake@params[["path"]]
 setwd(path)
-
-
-
-# pass arguments
-args < - commandArgs(trailingOnly=TRUE)
-print(args[1])
-
-spec = args[1]
-
-
-setwd(paste0("/work/project/briefwp3/Adela/", spec, "/assembly/GA_CT"))
 
 # load libraries
 library(dplyr)
 library(ggplot2)
 
-# get mapped reads (PRIMARY AND Supplementary) and fasta regions
-# calculate number of reads in the fasta regions that are BRIDGING - aligning around the region
-
-
-sam = paste0("/work/project/briefwp3/Adela/", spec,
-             "/assembly/map_raw/", spec, "_mapped_sorted.bam")
-print(sam)
-
-# 0x100 = secondary, 0x4=unmapped
-system(paste0("module load bioinfo/samtools/1.19; samtools view -F 0x104 ", sam,
-       " | awk '{print $1, $3, $4, length($10)}' > fq_fa_fqstart.txt"), intern=TRUE)
-
-# samtools view -F 0x804 ../map_raw/Medicago_sativa_mapped.sam | awk '{print $1, $3, $4, length($10)}' > fq_fa_fqstart.txt
+#fa_file="/work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_assembly.txt"
+#fq_file="/work/project/briefwp3/Adela/GA_CT/results/Medicago_sativa_GACT_raw_reads.txt"
+#sam="/work/project/briefwp3/Adela/GA_CT/results/mapped_reads/Diplocyclos_palmidus_fail_sorted.bam"
 
 # mapped reads
-b < - read.table("fq_fa_fqstart.txt")
-# FASTA table
-fa < - read.table("fa_enriched_regions_GACT_slide.txt_IDs")
-colnames(fa) < -c("readID", "contigID", "window_start",
-                  "window_end", "length", "sequence")
-fa$window_ID < - paste0(fa$contigID, "_", fa$window_start, "_", fa$window_end, "_", fa$sequence)
-mapfa < - merge(b, fa, by.x="V2", by.y="contigID")
-# reads regions
-fq < - read.table("fq_enriched_regions_GACT_slide.txt_IDs")
-fq$V6 < - sub('.', '', fq$V2)  # remove first character from the name to match
-fq2 < - fq[, c(6, 3, 4)]
-colnames(fq2) < - c("V1", "V2", "V3")
-c < - merge(fq2, mapfa, by.x="V1", by.y="V1")
-c$fq_length < - c$V3.x - c$V2.x
-c$fq_wst < - c$V2.x + c$V3.y
-c$fq_wen < - c$V3.x + c$V3.y
+fa <- read.table(fa_file)
+colnames(fa)<-c("contigID", "fa_wst", "fa_wen", "fa_length", "sequence")
+fa$window_ID < - paste0(fa$contigID, "_", fa$fa_wst, "_", fa$fa_wen, "_", fa$sequence)
 
-main < - c[, c("V2.y", "V1", "window_start", "window_end", "fq_wst", "fq_wen", "length", "fq_length", "V4", "V3.y")]
-colnames(main) < - c("contigID", "readID", "fa_wst", "fa_wen", "fq_wst",
-                     "fq_wen", "fa_length", "fq_length", "read_length", "contig_start")
+b <- read.table(multimapped_txt, h=F)
+colnames(b) <- c("readID", "FLAG", "contigID", "contig_start", "CIGAR", "read_length")
+
+mapfa <- merge(fa,b, by.x="contigID") # multimapped reads with detected region
+
+fq <- read.table(fq_file)
+colnames(fq)<-c("readID", "fq_window_start", "fq_window_end", "fq_length", "sequence")
+
+fq2 < - fq[, c(1,2,3,4)] #readID, start, end
+c < - merge(fq2, mapfa, by="readID")
+
+c$fq_wst < - c$fq_window_start + c$contig_start
+c$fq_wen < - c$fq_window_end + c$contig_start
+
+
+main < - c[,c("contigID", "readID", "fa_wst", "fa_wen", "fq_wst",
+                     "fq_wen", "fa_length", "fq_length", "read_length", "contig_start")]
 # fq region = fa region:
 main2 < - main[which(main$fq_wst <= main$fa_wst & main$fq_wen > main$fa_wen),]
 
@@ -82,8 +63,10 @@ for (n in c(5000, 100, 50, 10)) {
     plmain < - merge(plotdf, main5, by="wID")
 
 
-    pdf(paste0(spec, "_facet_bridging_", n, "bp.pdf"),
-        width=13.8, height=7.31, onefile=TRUE)
+#    pdf(paste0(spec, "_facet_bridging_", n, "bp.pdf"),
+#        width=13.8, height=7.31, onefile=TRUE)
+
+    pdf(plot_out,width=13.8, height=7.31, onefile=TRUE)
 
     p1 < - ggplot(plmain, aes(x=pos2, y=DP_norm, group=wID, color=wID)) + geom_line() + theme_minimal() + facet_wrap(~wID) + theme(legend.position="none") + scale_x_discrete(labels=NULL, breaks=NULL) + labs(x="")
 
@@ -93,6 +76,6 @@ for (n in c(5000, 100, 50, 10)) {
 
     dev.off()
 
-    system(paste0("convert ", spec, "_facet_bridging_", n, "bp.pdf ",
-           spec, "_facet_bridging_", n, "bp.png"), intern=TRUE)
+#    system(paste0("convert ", spec, "_facet_bridging_", n, "bp.pdf ",
+#           spec, "_facet_bridging_", n, "bp.png"), intern=TRUE)
 }

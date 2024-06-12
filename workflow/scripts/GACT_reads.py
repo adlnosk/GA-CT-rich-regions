@@ -9,7 +9,8 @@ from Bio import SeqIO
 import gzip
 
 input_file_path = snakemake.input.fastq_gzip_file
-print(input_file_path)
+print(f"Input file path: {input_file_path}")
+
 output_file = snakemake.output.out
 
 window_size = snakemake.params.window_size
@@ -38,13 +39,13 @@ with gzip.open(input_file_path, "rt") as inf:
             if (ga_ratio > threshold or ct_ratio > threshold) and (end < (len(sequence)-window_size)):
                 i_min = start
                 w = 'yes'
-            elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > 10*window_size):
+            elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > window_size):
                 w = 'yes'
                 enriched_regions.append(
                     (id, start, end, end-start, sequence[start:end]))
                 # print((id, start, end, end-start, sequence[start:end]))
                 i_min = i+(window_size // 2)
-            elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > 10*window_size):
+            elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > window_size):
                 w = 'no'
                 enriched_regions.append(
                     (id, start, end, end-start, sequence[start:end]))

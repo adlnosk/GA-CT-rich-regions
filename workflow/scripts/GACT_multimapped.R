@@ -15,33 +15,22 @@ spec = snakemake@params[["species"]]
 
 fa_file = snakemake@input[["ass_regions"]]
 fq_file = snakemake@input[["reads_regions"]]
-sam = snakemake@input[["aligned_reads"]]
-ref = snakemake@input[["ref"]]
 
 locs_out = snakemake@output[["locs"]]
 targets_out = snakemake@output[["targets"]]
-multimapped_txt = snakemake@output[["multimapped_reads"]]
-
+multimapped_txt = snakemake@input[["multimapped_reads"]]
 
 path=snakemake@params[["path"]]
 setwd(path)
-
 
 # load libraries
 library(dplyr)
 library(ggplot2)
 
-
 # -------------------------------------------------------
 # run samtools view to get the multimapped reads
-system(paste0("module load bioinfo/samtools/1.19; samtools view -F 0x104 ", sam , " | awk '$6 ~ /H|S/{print $0}' | awk '{print $1, $2, $3, $4, $6, length ($10)-1 }'  > ", multimapped_txt), intern = TRUE)
+# system(paste0("module load bioinfo/samtools/1.19; samtools view -F 0x104 ", sam , " | awk '$6 ~ /H|S/{print $0}' | awk '{print $1, $2, $3, $4, $6, length ($10)-1 }'  > ", multimapped_txt), intern = TRUE)
 #--------------------------------------------------------
-
-# a <- read.table("fq_pos_list_all")
-# colnames(a) <- c("readID", "window_start", "window_end", "sequence")
-# b<- read.table("multimapped_fq_fa_pos.txt", h=F)
-# colnames(b) <- c("readID", "FLAG", "contigID", "contig_start", "CIGAR", "read_len")
-# c <- merge(a,b, by.x="readID") # multimapped with detected region
 
 fq <- read.table(fq_file)
 colnames(fq)<-c("readID", "window_start", "window_end", "length", "sequence")

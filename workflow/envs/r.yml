@@ -7,4 +7,6 @@ dependencies:
 - r-ggplot2
 - r-dplyr
 - r-gsubfn
+- r-reshape2
+- r-stringr
 - samtools=1.19

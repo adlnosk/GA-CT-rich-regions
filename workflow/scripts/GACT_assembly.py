@@ -33,13 +33,13 @@ for n, record in enumerate(SeqIO.parse(input_file_path, "fasta")):
         if (ga_ratio > threshold or ct_ratio > threshold) and (end < (len(sequence)-window_size)):
             i_min = start
             w = 'yes'
-        elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > 10*window_size):
+        elif (ga_ratio > threshold or ct_ratio > threshold) and (end > (len(sequence)-window_size)) and (end-start > window_size):
             w = 'yes'
             enriched_regions.append(
                 (contig, start, end, end-start, sequence[start:end]))
             # print((contig, start, end, end-start, sequence[start:end]))
             i_min = i+(window_size // 2)
-        elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > 10*window_size):
+        elif w == 'yes' and (ga_ratio < threshold and ct_ratio < threshold) and (end-start > window_size):
             w = 'no'
             enriched_regions.append(
                 (contig, start, end, end-start, sequence[start:end]))

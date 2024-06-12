@@ -43,7 +43,8 @@ rule all:
 #        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
         expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
 	expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species']),
-        expand (OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf", spec=config['species'])
+        expand (OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf", spec=config['species']),
+        expand (OUT_DIR + "/bridging/{spec}_b_plots.pdf", spec=config['species'])
         
 #        which_analysis()
           
@@ -97,7 +98,7 @@ rule GA_CT_reads:
 
 rule GA_CT_fail_reads:
     input: 
-        fastq_gzip_file=rules.zip_fastq_fail.output
+        fastq_gzip_file=OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
     output:
         out=OUT_DIR + "/{spec}_GACT_fail_reads.txt"
     conda:
@@ -110,18 +111,20 @@ rule GA_CT_fail_reads:
 
 ############## map raw and failed reads
 
-rule minimap_raw_sort:
+rule minimap_raw_sort: #wrapper for minimaps2_bam_sorted
     input:
         target=get_assembly,
         query=get_fastq # or get_raw_reads in BAM
     output:
         OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
     threads: 6
+    resources:
+        mem_mb=100000
     params:
         extra="-x map-hifi",  # optional
         sorting="coordinate"  # optional: Enable sorting. Possible values: 'none', 'queryname' or 'coordinate'
     wrapper:
-        "v3.10.2/bio/minimap2/aligner"
+        "v3.12.0/bio/minimap2/aligner"
 
 rule samtools_index_raw:
     input:
@@ -144,12 +147,14 @@ rule minimap_fail_sort:
     output:
         OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
     threads: 6
+    resources:
+        mem_mb=100000
     params:
         extra="-x map-hifi",  # optional
         sorting="coordinate",  # optional: Enable sorting. Possible values: 'none', 'queryname' or 'coordinate'
         sort_extra="",  # optional: extra arguments for samtools/picard
     wrapper:
-        "v3.10.2/bio/minimap2/aligner"
+        "v3.12.0/bio/minimap2/aligner"
 
 rule samtools_index_fail:
     input:
@@ -205,22 +210,29 @@ rule plot_fail_curves:
         "scripts/GACT_plot_coverages.R"
 
 # analyse multimapped reads
+rule get_multimapped:
+    input:
+        aligned_reads=rules.minimap_raw_sort.output
+    output:
+        OUT_DIR + "/multimapped/{spec}_mm_reads.txt"
+    resources:
+        mem_mb=20000
+    shell:
+        """
+        module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6
+ ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
+        """
 
 rule multimapped:
     input:
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
-        aligned_reads=rules.minimap_raw_sort.output,
-        aligned_reads_index=rules.samtools_index_raw.output,
-        ref=get_assembly
+        multimapped_reads=rules.get_multimapped.output,
     output:
-        multimapped_reads=OUT_DIR + "/multimapped/{spec}_mm_reads.txt", #intermediate file with filtered reads
         targets=OUT_DIR + "/multimapped/{spec}_mm_targets_withCIGAR.txt", #table with multimapped reads potential for scaffolding
         locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
     params:
-        depth_prefix=r"{spec}_ass_regions_flank",
         species=r"{spec}",
-        plotting_flank=10000,
         path=OUT_DIR
     resources:
         mem_mb=50000
@@ -257,4 +269,24 @@ rule make_IGV_shots_multimapped:
         """
 
 # analyse bridging reads
+rule bridging:
+    input:
+        ass_regions=rules.GA_CT_assembly.output,
+        reads_regions=rules.GA_CT_reads.output,
+        multimapped_reads=rules.get_multimapped.output,
+    output:
+        plot=OUT_DIR + "/bridging/{spec}_b_plots.pdf"
+    params:
+        species=r"{spec}",
+        plotting_flank=10000,
+        path=OUT_DIR+"/bridging"
+    resources:
+        mem_mb=50000
+    conda:
+        "envs/r.yml"
+    script:
+        "scripts/GACT_bridging.R"
+
+
+
 

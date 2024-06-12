@@ -48,7 +48,9 @@ ofa$en <- ofa$window_end + flank
 ofa <- ofa[,c("window_ID","length","contigID","st","en")]
 ofa[,"st"] <- ifelse(ofa[,"st"]<0,0,ofa[,"st"])
 ofa$wID <- paste0(ofa$contigID,"_", ofa$st,"_", ofa$en)
-out <-  ofa[,c("contigID","st","en", "window_ID")]
+
+ofa$keep <- ofa$en - ofa$st
+out <-  ofa[which(ofa[ofa$keep>0,]),c("contigID","st","en", "window_ID")]
 
 write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=500M
+#SBATCH --mem=5000M
 
 module purge
 
