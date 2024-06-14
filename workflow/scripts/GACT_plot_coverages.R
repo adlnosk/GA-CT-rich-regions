@@ -7,6 +7,8 @@
 # used in rules: plot_assembly_curves, plot_fail_curves 
 # pass arguments
 
+options(scipen=999)
+
 spec = snakemake@params[["species"]]
 flank = snakemake@params[["plotting_flank"]]
 
@@ -18,7 +20,7 @@ ref = snakemake@input[["ref"]]
 plotfile=snakemake@output[["plot"]]
 plot_ends=snakemake@output[["plot_ends"]]
 
-table=snakemake@output[["table"]]
+table=snakemake@output[["table_plot"]]
 
 outdepth=snakemake@params[["depth_prefix"]]
 
@@ -50,7 +52,7 @@ ofa[,"st"] <- ifelse(ofa[,"st"]<0,0,ofa[,"st"])
 ofa$wID <- paste0(ofa$contigID,"_", ofa$st,"_", ofa$en)
 
 ofa$keep <- ofa$en - ofa$st
-out <-  ofa[which(ofa[ofa$keep>0,]),c("contigID","st","en", "window_ID")]
+out <-  ofa[which(ofa$keep>0),c("contigID","st","en", "window_ID")]
 
 write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 
@@ -65,12 +67,18 @@ df$a <- paste0(df$contigID, "_", df$pos)
 ofa$a <- paste0(ofa$contigID, "_", ofa$st)
 
 # create dictionary to assign windowID to samtools depth output
-contig_positions <- list()
-for (i in 1:nrow(ofa)) {
-  # Generate a sequence of positions from start to end
-  positions <- paste0(ofa$window_ID[i], ".", ofa$contigID[i],"_", seq(ofa$st[i], ofa$en[i]))
-  contig_positions[[i]] <- positions
-  }
+
+#contig_positions <- list()
+#for (i in 1:nrow(ofa)) {
+#  # Generate a sequence of positions from start to end
+#  positions <- paste0(ofa$window_ID[i], ".", ofa$contigID[i],"_", seq(ofa$st[i], ofa$en[i]))
+#  contig_positions[[i]] <- positions
+#  }
+# faster than the loop:
+contig_positions <- vector("list", nrow(ofa))
+contig_positions <- unlist(lapply(seq_len(nrow(ofa)), function(i) paste0(ofa$window_ID[i], ".", ofa$contigID[i], "_", seq(ofa$st[i], ofa$en[i]))))
+
+
 require(reshape2)
 dd <- melt(contig_positions)
 library(stringr)

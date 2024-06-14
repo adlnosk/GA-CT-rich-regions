@@ -41,8 +41,8 @@ rule all:
 #        expand (OUT_DIR + "/{spec}_GACT_fail_reads.txt", spec=config['species']),
 #		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
 #        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
-        expand (OUT_DIR + "/{spec}_GACT_assembly.pdf", spec=config['species']),
-	expand (OUT_DIR + "/{spec}_GACT_fail_reads.pdf", spec=config['species']),
+        expand (OUT_DIR + "/curves/{spec}_GACT_assembly.pdf", spec=config['species']),
+	expand (OUT_DIR + "/curves/{spec}_GACT_fail_reads.pdf", spec=config['species']),
         expand (OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf", spec=config['species']),
         expand (OUT_DIR + "/bridging/{spec}_b_plots.pdf", spec=config['species'])
         
@@ -175,7 +175,9 @@ rule plot_assembly_curves:
         aligned_reads_index=rules.samtools_index_raw.output,
         ref=get_assembly
     output:
-        plot=OUT_DIR + "/{spec}_GACT_assembly.pdf"
+        plot=OUT_DIR + "/curves/{spec}_GACT_assembly.pdf",
+        plot_ends=OUT_DIR + "/curves/{spec}_GACT_assembly_ends.pdf",
+        table_plot=OUT_DIR + "/curves/{spec}_GACT_assembly_for_plot.txt"
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
     	species=r"{spec}",
@@ -196,7 +198,9 @@ rule plot_fail_curves:
         aligned_reads_index=rules.samtools_index_fail.output,
         ref=get_assembly
     output:
-        plot=OUT_DIR + "/{spec}_GACT_fail_reads.pdf"
+        plot=OUT_DIR + "/curves/{spec}_GACT_fail_reads.pdf",
+        plot_ends=OUT_DIR + "/curves/{spec}_GACT_fail_reads_ends.pdf",
+        table_plot=OUT_DIR + "/curves/{spec}_GACT_fail_reads_for_plot.txt"
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
         species=r"{spec}",
@@ -219,8 +223,7 @@ rule get_multimapped:
         mem_mb=20000
     shell:
         """
-        module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6
- ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
+        module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
         """
 
 rule multimapped:
@@ -235,7 +238,7 @@ rule multimapped:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=50000
+        mem_mb=100000
     conda:
         "envs/r.yml"
     script:
@@ -253,16 +256,13 @@ rule make_IGV_shots_multimapped:
         ref=get_assembly,
         path=OUT_DIR + "/multimapped/shots/{spec}/"
     resources:
-        mem_mb=50000
+        mem_mb=20000
     shell:
         """
         mkdir -p {params.path}
         cd {params.path}
         mv {input.locs} temp
-        (echo -e new\\n\
-        genome {params.ref}\\n\
-        snapshotDirectory {params.path}\\n\
-        load {input.bam}\\n ; cat temp ; echo exit) > locs
+        (echo -e new\ngenome {params.ref}\nsnapshotDirectory {params.path}\nload {input.bam}\n ; cat temp ; echo exit) > locs
         rm temp
         module load devel/java/17.0.6 bioinfo/IGV/2.16.1; igv.sh -b locs
         convert *png {output.plots}
@@ -281,7 +281,7 @@ rule bridging:
         plotting_flank=10000,
         path=OUT_DIR+"/bridging"
     resources:
-        mem_mb=50000
+        mem_mb=100000
     conda:
         "envs/r.yml"
     script:

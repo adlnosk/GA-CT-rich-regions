@@ -11,6 +11,8 @@
 
 # pass arguments
 
+options(scipen=999)
+
 spec = snakemake@params[["species"]]
 
 fa_file = snakemake@input[["ass_regions"]]
@@ -83,6 +85,7 @@ targets <- target %>% group_by(readID) %>% distinct(readID, contigID, .keep_all 
 # clipped reads that are > once (are duplicated) and on the edge
 # targets <- cdup[is.element(cdup$readID, edges$readID),]
 
+print("Writing targets.")
 write.table(targets[,c("readID", "contigID", "start", "end", "contig_start", "leftclip", "rightclip")], targets_out,  col.names=T, row.names=F, quote=F)  
 
 # locs for IGV
@@ -91,8 +94,10 @@ out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into num
 out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
 locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
 locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID"], "_", out[,"contigID"], ".png\n")
-head(locs)
-dim(locs)
+
+
+print("Writing locations for IGV (locs).")
+
 write.table(locs, locs_out, col.names=F, row.names=F, quote=F)
 
 print("END OF SCRIPT")

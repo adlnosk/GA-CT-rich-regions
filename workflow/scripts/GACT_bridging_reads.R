@@ -1,4 +1,5 @@
 # script to get reads that are bridging the GA/CT regions (aligning on both sides)
+options(scipen=999)
 
 fa_file = snakemake@input[["ass_regions"]]
 fq_file = snakemake@input[["reads_regions"]]
