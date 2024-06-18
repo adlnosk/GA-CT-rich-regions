@@ -17,6 +17,8 @@ spec = snakemake@params[["species"]]
 
 fa_file = snakemake@input[["ass_regions"]]
 fq_file = snakemake@input[["reads_regions"]]
+ref = snakemake@input[["assembly"]]
+
 
 locs_out = snakemake@output[["locs"]]
 targets_out = snakemake@output[["targets"]]
@@ -66,8 +68,9 @@ cdup$window_length <- cdup$window_end - cdup$window_start
 cout <- cdup[order(cdup[,"readID"]),c("readID", "window_length", "window_start", "window_end", "contigID", "start", "end", "st", "en", "leftclip", "rightclip", "contig_start" )]
 
 # which reads are longer than beginning? - need lengths of contigs
-fai <- read.table(paste0("/work/project/briefwp3/Adela/", spec, "/assembly/", spec, ".asm.bp.p_ctg.fa.fai"), h=F)
+fai <- read.table(paste0(ref, ".fai"), h=F)
 colnames(fai) <- c("V1", "contig_max")
+
 outfai <- merge(cout, fai[,c(1,2)], by.x="contigID", by.y="V1")
 
 outfai[,"st"] <- ifelse(outfai[,"st"] < 0, 0, outfai[,"st"])

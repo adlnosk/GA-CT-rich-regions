@@ -59,9 +59,13 @@ write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 # -------------------------------------------------------
 # run samtools depth, wait for output
 system(paste0("module load bioinfo/samtools/1.19; samtools depth -G UNMAP,SECONDARY -b ", outdepth, ".bed --reference ", ref ," ", sam, " -o ", outdepth, ".depth" ), intern = TRUE)
+system(paste0("awk 'FNR%2' ", outdepth, ".depth > ", outdepth, "_filtered.depth"), intern = TRUE)
 #--------------------------------------------------------
 
-df <- read.table(paste0(outdepth, ".depth"), h=F)
+### clean 
+rm(fa)
+
+df <- read.delim(paste0(outdepth, "_filtered.depth"), h=F)
 colnames(df) <- c("contigID", "pos", "DP")
 df$a <- paste0(df$contigID, "_", df$pos)
 ofa$a <- paste0(ofa$contigID, "_", ofa$st)
@@ -75,8 +79,8 @@ ofa$a <- paste0(ofa$contigID, "_", ofa$st)
 #  contig_positions[[i]] <- positions
 #  }
 # faster than the loop:
-contig_positions <- vector("list", nrow(ofa))
-contig_positions <- unlist(lapply(seq_len(nrow(ofa)), function(i) paste0(ofa$window_ID[i], ".", ofa$contigID[i], "_", seq(ofa$st[i], ofa$en[i]))))
+contig_positions <- vector("list", nrow(ofa)/2)
+contig_positions <- unlist(lapply(seq_len(nrow(ofa)/2), function(i) paste0(ofa$window_ID[i], ".", ofa$contigID[i], "_", seq(ofa$st[i], ofa$en[i], by=2))))
 
 
 require(reshape2)

@@ -4,6 +4,7 @@ options(scipen=999)
 fa_file = snakemake@input[["ass_regions"]]
 fq_file = snakemake@input[["reads_regions"]]
 multimapped_txt = snakemake@input[["multimapped_reads"]]
+curves = snakemake@input[["curves"]]
 
 plot_out = snakemake@output[["plot"]]
 
@@ -43,11 +44,11 @@ main < - c[,c("contigID", "readID", "fa_wst", "fa_wen", "fq_wst",
 # fq region = fa region:
 main2 < - main[which(main$fq_wst <= main$fa_wst & main$fq_wen > main$fa_wen),]
 
-plotdf < - read.table("plot_depths_fa200_10flanks.txt", h=T)
+plotdf < - read.table(curves, h=T)
 
-# loop over several flanking sequence sizes: 10 kb (= whole plotted region), 5 kb, 100 bp, 50 bp, 10 bp
+# loop over several flanking sequence sizes: 10 kb (= whole plotted region), 5 kb, 100 bp, 50 bp, 10 bp or select fixed
 
-for (n in c(5000, 100, 50, 10)) {
+for (n in c(50)) {
 
     print("###########################################################################")
     print(n)
