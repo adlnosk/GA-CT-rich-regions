@@ -1,5 +1,0 @@
-{
-    "SBATCH_DEFAULTS": "account=apoublan no-requeue exclusive time=1600 mem=20G",
-    "CLUSTER_NAME": "genobioinfo",
-    "CLUSTER_CONFIG": ""
-}

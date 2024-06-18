@@ -186,7 +186,7 @@ rule plot_assembly_curves:
     conda: 
     	"envs/r.yml"
     resources:
-        mem_mb=50000
+        mem_mb=200000
     script:
         "scripts/GACT_plot_coverages.R"
 
@@ -231,6 +231,7 @@ rule multimapped:
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
         multimapped_reads=rules.get_multimapped.output,
+        assembly=get_assembly
     output:
         targets=OUT_DIR + "/multimapped/{spec}_mm_targets_withCIGAR.txt", #table with multimapped reads potential for scaffolding
         locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
@@ -262,7 +263,11 @@ rule make_IGV_shots_multimapped:
         mkdir -p {params.path}
         cd {params.path}
         mv {input.locs} temp
-        (echo -e new\ngenome {params.ref}\nsnapshotDirectory {params.path}\nload {input.bam}\n ; cat temp ; echo exit) > locs
+        echo "new" > locs 
+        echo "genome {params.ref}" >> locs
+        echo "snapshotDirectory {params.path}" >> locs
+        echo "load {input.bam}" >> locs
+        cat temp  >> locs
         rm temp
         module load devel/java/17.0.6 bioinfo/IGV/2.16.1; igv.sh -b locs
         convert *png {output.plots}
@@ -274,6 +279,7 @@ rule bridging:
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
         multimapped_reads=rules.get_multimapped.output,
+        curves=rules.plot_assembly_curves.output.table_plot
     output:
         plot=OUT_DIR + "/bridging/{spec}_b_plots.pdf"
     params:
