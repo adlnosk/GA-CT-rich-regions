@@ -9,7 +9,7 @@ cluster:
 default-resources:
   - partition=workq
   - mem_mb=20000
-restart-times: 3
+restart-times: 1
 max-jobs-per-second: 10
 max-status-checks-per-second: 1
 local-cores: 1
