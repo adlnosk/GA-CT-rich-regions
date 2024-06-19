@@ -95,9 +95,9 @@ write.table(targets[,c("readID", "contigID", "start", "end", "contig_start", "le
 out <- as.data.frame(targets[,c("contigID","readID", "st","en")])
 out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into numbers
 out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
+out[,"readID2"] <- gsub("/", "_", out$readID)
 locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
-locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID"], "_", out[,"contigID"], ".png\n")
-
+locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID2"], "_", out[,"contigID"], ".png\n")
 
 print("Writing locations for IGV (locs).")
 

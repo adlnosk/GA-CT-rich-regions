@@ -12,10 +12,10 @@ print (config['species'])
 
  
 # get parent of current directory
-path = os.getcwd()
-out = os.path.abspath(os.path.join(path, os.pardir))
-OUT_DIR = f"{out}/results"
-
+PATH = os.getcwd()
+OUT = os.path.abspath(os.path.join(PATH, os.pardir))
+SPEC = ''.join(config['species'])
+OUT_DIR = f"{OUT}/results/{SPEC}"
 
 def get_raw_reads(wildcards):
     return config["raw_reads"][wildcards.spec]
@@ -29,6 +29,26 @@ def get_fastq(wildcards):
 def get_fail_reads(wildcards):
     return config["fail_reads"][wildcards.spec]
 
+# Adjusting the requested outputs according to the config file
+def which_analysis():
+    analysis_inputs = [     
+       expand (OUT_DIR + "/list_GACT_regions_in_assembly.txt", spec=config['species']), #list of all regions
+       expand (OUT_DIR + "/list_contigs_ends.txt"), #list of contigs that are broken due to GACT
+       expand (OUT_DIR + "/PLOTS/curves_contigs_ends.pdf"), #plot contig ends
+       expand (OUT_DIR + "/list_multimapped_raw_reads_ends.txt"), #list reads, that are mapping to 2 contig ends (possible bridge)
+    ]
+    # Optionals analysis steps
+    if config["plot_contig_curves_all"] == "True":
+        analysis_inputs.append(
+	    expand (OUT_DIR + "/PLOTS/curves_assembly_all.pdf", spec=config['species']),
+        )
+    if config["detect_fail_regions"] == "True": 
+        analysis_inputs.append(
+            expand (OUT_DIR + "/list_multimapped_fail_reads_ends.txt", spec=config['species']),
+        )
+    return analysis_inputs
+
+print(which_analysis())
 
 """
 Rules
@@ -36,30 +56,15 @@ Rules
 
 rule all:
     input:
-#        expand (OUT_DIR + "/{spec}_GACT_assembly.txt", spec=config['species']),
-#        expand (OUT_DIR + "/{spec}_GACT_raw_reads.txt", spec=config['species']),
-#        expand (OUT_DIR + "/{spec}_GACT_fail_reads.txt", spec=config['species']),
-#		expand (OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai", spec=config['species']),
-#        expand (OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai", spec=config['species']),
-        expand (OUT_DIR + "/curves/{spec}_GACT_assembly.pdf", spec=config['species']),
-	expand (OUT_DIR + "/curves/{spec}_GACT_fail_reads.pdf", spec=config['species']),
-        expand (OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf", spec=config['species']),
-        expand (OUT_DIR + "/bridging/{spec}_b_plots.pdf", spec=config['species'])
-        
-#        which_analysis()
-          
-# rule all - main outputs: plot of coverage curves, list of problematic regions (contig eges), plot of mapped failed reads, bridging reads (= well aligned on both sides of the regions)
+          which_analysis()
 
-"""
-Prepare input files
-"""
 
 # FAIL READS into FASTQ
 rule zip_fastq_fail:
     input:
         get_fail_reads # 1 bam file
     output:
-        OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
+        temp(OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz")
     threads: 5
     resources: 
         mem_mb=50000
@@ -74,7 +79,7 @@ rule GA_CT_assembly:
     input: 
         fasta_file=get_assembly
     output:
-        out=OUT_DIR + "/{spec}_GACT_assembly.txt"
+        out=OUT_DIR + "/list_GACT_regions_in_assembly.txt"
     conda:
         "envs/py.yml"
     params:
@@ -87,7 +92,7 @@ rule GA_CT_reads:
     input: 
         fastq_gzip_file=get_fastq
     output:
-        out=OUT_DIR + "/{spec}_GACT_raw_reads.txt"
+        out=temp(OUT_DIR + "/{spec}_GACT_raw_reads.txt")
     conda:
         "envs/py.yml"
     params:
@@ -100,7 +105,7 @@ rule GA_CT_fail_reads:
     input: 
         fastq_gzip_file=OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
     output:
-        out=OUT_DIR + "/{spec}_GACT_fail_reads.txt"
+        out=temp(OUT_DIR + "/{spec}_GACT_fail_reads.txt")
     conda:
         "envs/py.yml"
     params:
@@ -137,7 +142,6 @@ rule samtools_index_raw:
 
 ##############
 
-
 # Wrapper for Minimap bam sorted:
  
 rule minimap_fail_sort:
@@ -167,7 +171,7 @@ rule samtools_index_fail:
 
 ## plot coverage curve (main reads + ends into /extra/), write also the plotting table into /extra/
 
-rule plot_assembly_curves:
+rule get_ends_prep_plot:
     input: 
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_reads.output,
@@ -175,9 +179,10 @@ rule plot_assembly_curves:
         aligned_reads_index=rules.samtools_index_raw.output,
         ref=get_assembly
     output:
-        plot=OUT_DIR + "/curves/{spec}_GACT_assembly.pdf",
-        plot_ends=OUT_DIR + "/curves/{spec}_GACT_assembly_ends.pdf",
-        table_plot=OUT_DIR + "/curves/{spec}_GACT_assembly_for_plot.txt"
+        plot_ends=OUT_DIR + "/PLOTS/curves_contigs_ends.pdf",
+        table_ends=OUT_DIR + "/list_contigs_ends.txt",
+        table_plot_all=OUT_DIR + "/PLOTS/table_for_plot_curves_all.txt",
+        samtools_depths=OUT_DIR + "{spec}_ass_regions_flank.depth"
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
     	species=r"{spec}",
@@ -186,9 +191,27 @@ rule plot_assembly_curves:
     conda: 
     	"envs/r.yml"
     resources:
+        mem_mb=100000
+    script:
+        "scripts/GACT_get_ends.R"
+
+rule plot_curves_all:
+    input:
+        table=rules.get_ends_prep_plot.output.table_plot_all,
+        bed=OUT_DIR + "{spec}_ass_regions_flank.bed"
+    output:
+        plot=OUT_DIR + "/PLOTS/curves_assembly_all.pdf"
+    params:
+        depth_prefix=r"{spec}_ass_regions_flank",
+        species=r"{spec}",
+        plotting_flank=10000,
+        path=OUT_DIR
+    conda:
+        "envs/r.yml"
+    resources:
         mem_mb=200000
     script:
-        "scripts/GACT_plot_coverages.R"
+        "scripts/GACT_plot_curves_all.R"
 
 rule plot_fail_curves:
     input:
@@ -207,7 +230,7 @@ rule plot_fail_curves:
         plotting_flank=10000,
         path=OUT_DIR
     resources:
-        mem_mb=50000
+        mem_mb=200000
     conda:
         "envs/r.yml"
     script:
@@ -239,60 +262,10 @@ rule multimapped:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=100000
+        mem_mb=200000
     conda:
         "envs/r.yml"
     script:
         "scripts/GACT_multimapped.R"
-
-# process locs and run IGV
-
-rule make_IGV_shots_multimapped:
-    input:
-        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt", #for IGV shots
-        bam=rules.minimap_raw_sort.output
-    output:
-        plots=OUT_DIR + "/multimapped/shots/{spec}_IGV_shots.pdf" #for IGV shots
-    params:
-        ref=get_assembly,
-        path=OUT_DIR + "/multimapped/shots/{spec}/"
-    resources:
-        mem_mb=20000
-    shell:
-        """
-        mkdir -p {params.path}
-        cd {params.path}
-        mv {input.locs} temp
-        echo "new" > locs 
-        echo "genome {params.ref}" >> locs
-        echo "snapshotDirectory {params.path}" >> locs
-        echo "load {input.bam}" >> locs
-        cat temp  >> locs
-        rm temp
-        module load devel/java/17.0.6 bioinfo/IGV/2.16.1; igv.sh -b locs
-        convert *png {output.plots}
-        """
-
-# analyse bridging reads
-rule bridging:
-    input:
-        ass_regions=rules.GA_CT_assembly.output,
-        reads_regions=rules.GA_CT_reads.output,
-        multimapped_reads=rules.get_multimapped.output,
-        curves=rules.plot_assembly_curves.output.table_plot
-    output:
-        plot=OUT_DIR + "/bridging/{spec}_b_plots.pdf"
-    params:
-        species=r"{spec}",
-        plotting_flank=10000,
-        path=OUT_DIR+"/bridging"
-    resources:
-        mem_mb=100000
-    conda:
-        "envs/r.yml"
-    script:
-        "scripts/GACT_bridging.R"
-
-
 
 
