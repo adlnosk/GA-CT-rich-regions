@@ -12,7 +12,7 @@ options(scipen=999)
 fa_file = snakemake@input[["ass_regions"]]
 fq_file = snakemake@input[["reads_regions"]]
 sam = snakemake@input[["aligned_reads"]]
-ref = snakemake@input[["ref"]]
+ref = snakemake@params[["ref"]]
 
 plot_ends=snakemake@output[["plot_ends"]] # PDF with contig ENDS
 table_plot=snakemake@output[["table_plot_all"]] # table with coordinates to plot all
@@ -23,7 +23,7 @@ outdepth=snakemake@params[["depth_prefix"]]
 flank=snakemake@params[["plotting_flank"]]
 
 path=snakemake@params[["path"]]
-setwd(path)
+setwd(paste0(path,spec))
 
 
 # load libraries
@@ -56,6 +56,7 @@ write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 # -------------------------------------------------------
 # run samtools depth, wait for output
 system(paste0("module load bioinfo/samtools/1.19; samtools depth -G UNMAP,SECONDARY -b ", outdepth, ".bed --reference ", ref ," ", sam, " -o ", outdepth, ".depth" ), intern = TRUE)
+system(paste0("mkdir -p PLOTS")), intern = TRUE)
 # OPTION TO FILTER DEPTHS (every second line): 
 # system(paste0("awk -i inplace 'FNR%2' ", outdepth, ".depth"), intern = TRUE)
 #--------------------------------------------------------
@@ -102,34 +103,42 @@ hdlist <- unique(df_half_down[,"window_ID"])
 print("Exporting PDF with contig ends - right and left.")
 pdf(plot_ends,width=13.8, height=7.31)
 
+if(nrow(df_half_down)>0){
 # ENDS downward
 ggplot(df_half_down, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + xlim(0,(2*flank)) + theme_minimal() + facet_wrap(~length) + theme(legend.position="none")
+}
 
 # ENDS upward = regions at contig ends (shorter than 20 000, ascending DP)
 df_half_up <- df_ofa %>% group_by(wID) %>% mutate(pos = row_number()) %>% filter(max(pos) < size ) %>% filter(first(DP) < last(DP) ) %>% mutate(pos2  = row_number() )
 table(df_half_up[,c("wID","length")])
 hulist <- unique(df_half_up[,"window_ID"])
+
+if(nrow(df_half_up)>0){
 ggplot(df_half_up, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + xlim(0,(2*flank)) + theme_minimal() + facet_wrap(~length) + theme(legend.position="none")
+}
 
 dev.off()
 
 
 ############## WRITING ENDS TABLE ###########
-df_half_down$side <- "R"
-print(head(df_half_down))
-print(head(df_half_up))
-df_half_up$side <- "L"
-ends_out <- rbind(df_half_down,df_half_up)
+hdlist$side <- "R"
+hulist$side <- "L"
+ends_out <- rbind(hdlist, hulist)
 print(nrow(ends_out))
 
+library(tidyr)
+ends_out2 <- ends_out %>% separate(window_ID, into = c("contigID", "start", "end", "sequence"), sep = "_")
+
 print("Writing table with contig ends.")
-write.table(ends_out, table_end, col.names=T, row.names=F, quote=F)
+write.table(ends_out2, table_ends, col.names=T, row.names=F, quote=F)
 
 
-# regions of whole lengths (20 000), or shorter (starting in the middle - ascending DP)
-df_ofa2 <- df_ofa[! df_ofa$window_ID %in% hdlist$window_ID,]
+# prepare for plotting - write.out the file
+# regions of whole lengths - ONLY (20 000)
+df_ofa2 <- df_ofa[! df_ofa$window_ID %in% ends_out$window_ID,]
 df_rest <- df_ofa2 %>% group_by(wID) %>% mutate(pos = row_number()) %>% mutate(pos2  = row_number()+(((2*flank)+length)-max(pos)))
-df2 <- rbind(df_half_down, df_rest)
+#df2 <- rbind(df_half_down, df_rest)
+df2 <- df_rest
 
 # SET NORMALISED DEPTH (per wID group)
 # merge both

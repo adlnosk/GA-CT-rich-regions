@@ -92,40 +92,14 @@ print("Writing targets.")
 write.table(targets[,c("readID", "contigID", "start", "end", "contig_start", "leftclip", "rightclip")], targets_out,  col.names=T, row.names=F, quote=F)  
 
 # locs for IGV
-out <- as.data.frame(targets[,c("contigID","readID", "st","en")])
-out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into numbers
-out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
-out[,"readID2"] <- gsub("/", "_", out$readID)
-locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
-locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID2"], "_", out[,"contigID"], ".png\n")
-
-print("Writing locations for IGV (locs).")
-
-write.table(locs, locs_out, col.names=F, row.names=F, quote=F)
+#out <- as.data.frame(targets[,c("contigID","readID", "st","en")])
+#out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into numbers
+#out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
+#out[,"readID2"] <- gsub("/", "_", out$readID)
+#locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
+#locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID2"], "_", out[,"contigID"], ".png\n")
+#print("Writing locations for IGV (locs).")
+#write.table(locs, locs_out, col.names=F, row.names=F, quote=F)
 
 print("END OF SCRIPT")
-
-############################################
-
-# IGV batch script - insert in the beginning of `locs`:
-
-
-#mkdir -p IGV_multimapped_edges
-
-#cd IGV_multimapped_edges
-#mv ../locs temp
-#(echo -e new\\n\
-#genome /work/project/briefwp3/Adela/${sp}/assembly/${sp}.asm.bp.p_ctg.fa\\n\
-#snapshotDirectory /work/project/briefwp3/Adela/${sp}/assembly/GA_CT/IGV_shots\\n\
-#load /work/project/briefwp3/Adela/${sp}/assembly/map_raw/${sp}_mapped_sorted.bam\\n ; cat temp ; echo exit) > locs
-#rm temp
-#
-#rm *.png
-#module load devel/java/17.0.6 bioinfo/IGV/2.16.1; igv.sh -b locs
-#
-#convert *png ${sp}_multi_edges.pdf
-#mv ${sp}_multi_edges.pdf $HOME/public_html/reports/results/GA_CT_regions/
-
-
-
 

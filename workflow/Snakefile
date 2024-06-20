@@ -14,8 +14,8 @@ print (config['species'])
 # get parent of current directory
 PATH = os.getcwd()
 OUT = os.path.abspath(os.path.join(PATH, os.pardir))
-SPEC = ''.join(config['species'])
-OUT_DIR = f"{OUT}/results/{SPEC}"
+SPEC = config['species']
+OUT_DIR = f"{OUT}/results/"
 
 def get_raw_reads(wildcards):
     return config["raw_reads"][wildcards.spec]
@@ -32,19 +32,19 @@ def get_fail_reads(wildcards):
 # Adjusting the requested outputs according to the config file
 def which_analysis():
     analysis_inputs = [     
-       expand (OUT_DIR + "/list_GACT_regions_in_assembly.txt", spec=config['species']), #list of all regions
-       expand (OUT_DIR + "/list_contigs_ends.txt"), #list of contigs that are broken due to GACT
-       expand (OUT_DIR + "/PLOTS/curves_contigs_ends.pdf"), #plot contig ends
-       expand (OUT_DIR + "/list_multimapped_raw_reads_ends.txt"), #list reads, that are mapping to 2 contig ends (possible bridge)
+       #expand (OUT_DIR + "/list_GACT_regions_in_assembly.txt", spec=SPEC), #list of all regions
+       expand (OUT_DIR + "{spec}/list_contigs_ends.txt", spec=SPEC), #list of contigs that are broken due to GACT
+       expand (OUT_DIR + "{spec}/PLOTS/curves_contigs_ends.pdf", spec=SPEC), #plot contig ends
+       expand (OUT_DIR + "{spec}/list_multimapped_raw_reads_ends.txt", spec=SPEC), #list reads, that are mapping to 2 contig ends (possible bridge)
     ]
     # Optionals analysis steps
     if config["plot_contig_curves_all"] == "True":
         analysis_inputs.append(
-	    expand (OUT_DIR + "/PLOTS/curves_assembly_all.pdf", spec=config['species']),
+	    expand (OUT_DIR + "{spec}/PLOTS/curves_assembly_all.pdf", spec=SPEC),
         )
     if config["detect_fail_regions"] == "True": 
         analysis_inputs.append(
-            expand (OUT_DIR + "/list_multimapped_fail_reads_ends.txt", spec=config['species']),
+            expand (OUT_DIR + "{spec}/list_multimapped_fail_reads_ends.txt", spec=SPEC),
         )
     return analysis_inputs
 
@@ -56,15 +56,15 @@ Rules
 
 rule all:
     input:
-          which_analysis()
-
+        expand (OUT_DIR + "{spec}/list_GACT_regions_in_assembly.txt", spec=SPEC), #list of all regions
+        which_analysis()
 
 # FAIL READS into FASTQ
 rule zip_fastq_fail:
     input:
         get_fail_reads # 1 bam file
     output:
-        temp(OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz")
+        temp(OUT_DIR + "{spec}/mapped_reads/{spec}_fail.fq.gz")
     threads: 5
     resources: 
         mem_mb=50000
@@ -79,7 +79,7 @@ rule GA_CT_assembly:
     input: 
         fasta_file=get_assembly
     output:
-        out=OUT_DIR + "/list_GACT_regions_in_assembly.txt"
+        out=OUT_DIR + "{spec}/list_GACT_regions_in_assembly.txt"
     conda:
         "envs/py.yml"
     params:
@@ -92,7 +92,7 @@ rule GA_CT_reads:
     input: 
         fastq_gzip_file=get_fastq
     output:
-        out=temp(OUT_DIR + "/{spec}_GACT_raw_reads.txt")
+        out=temp(OUT_DIR + "{spec}_GACT_raw_reads.txt")
     conda:
         "envs/py.yml"
     params:
@@ -103,9 +103,9 @@ rule GA_CT_reads:
 
 rule GA_CT_fail_reads:
     input: 
-        fastq_gzip_file=OUT_DIR + "/mapped_reads/{spec}_fail.fq.gz"
+        fastq_gzip_file=OUT_DIR + "{spec}/mapped_reads/{spec}_fail.fq.gz"
     output:
-        out=temp(OUT_DIR + "/{spec}_GACT_fail_reads.txt")
+        out=OUT_DIR + "{spec}/list_multimapped_fail_reads_ends.txt"
     conda:
         "envs/py.yml"
     params:
@@ -121,7 +121,7 @@ rule minimap_raw_sort: #wrapper for minimaps2_bam_sorted
         target=get_assembly,
         query=get_fastq # or get_raw_reads in BAM
     output:
-        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_raw_sorted.bam"
     threads: 6
     resources:
         mem_mb=100000
@@ -133,9 +133,9 @@ rule minimap_raw_sort: #wrapper for minimaps2_bam_sorted
 
 rule samtools_index_raw:
     input:
-        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_raw_sorted.bam"
     output:
-        OUT_DIR + "/mapped_reads/{spec}_raw_sorted.bam.bai"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_raw_sorted.bam.bai"
     threads: 4
     wrapper:
         "v3.7.0/bio/samtools/index"
@@ -149,7 +149,7 @@ rule minimap_fail_sort:
         target=get_assembly,
         query=rules.zip_fastq_fail.output
     output:
-        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_fail_sorted.bam"
     threads: 6
     resources:
         mem_mb=100000
@@ -162,9 +162,9 @@ rule minimap_fail_sort:
 
 rule samtools_index_fail:
     input:
-        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_fail_sorted.bam"
     output:
-        OUT_DIR + "/mapped_reads/{spec}_fail_sorted.bam.bai"
+        OUT_DIR + "{spec}/mapped_reads/{spec}_fail_sorted.bam.bai"
     threads: 3
     wrapper:
         "v3.7.0/bio/samtools/index"
@@ -177,17 +177,17 @@ rule get_ends_prep_plot:
         reads_regions=rules.GA_CT_reads.output,
         aligned_reads=rules.minimap_raw_sort.output,
         aligned_reads_index=rules.samtools_index_raw.output,
-        ref=get_assembly
     output:
-        plot_ends=OUT_DIR + "/PLOTS/curves_contigs_ends.pdf",
-        table_ends=OUT_DIR + "/list_contigs_ends.txt",
-        table_plot_all=OUT_DIR + "/PLOTS/table_for_plot_curves_all.txt",
-        samtools_depths=OUT_DIR + "{spec}_ass_regions_flank.depth"
+        table_ends=OUT_DIR + "{spec}/list_contigs_ends.txt",
+        plot_ends=OUT_DIR + "{spec}/PLOTS/curves_contigs_ends.pdf",
+        table_plot_all=OUT_DIR + "{spec}/PLOTS/table_for_plot_curves_all.txt",
+        samtools_depths=OUT_DIR + "{spec}/ass_regions_flank.depth"
     params:
-        depth_prefix=r"{spec}_ass_regions_flank",
-    	species=r"{spec}",
+        depth_prefix=r"ass_regions_flank",
     	plotting_flank=10000,
-        path=OUT_DIR
+        path=OUT_DIR,
+        ref=get_assembly,
+        species=r"{spec}"
     conda: 
     	"envs/r.yml"
     resources:
@@ -198,13 +198,9 @@ rule get_ends_prep_plot:
 rule plot_curves_all:
     input:
         table=rules.get_ends_prep_plot.output.table_plot_all,
-        bed=OUT_DIR + "{spec}_ass_regions_flank.bed"
     output:
-        plot=OUT_DIR + "/PLOTS/curves_assembly_all.pdf"
+        plot=OUT_DIR + "{spec}/PLOTS/curves_assembly_all.pdf"
     params:
-        depth_prefix=r"{spec}_ass_regions_flank",
-        species=r"{spec}",
-        plotting_flank=10000,
         path=OUT_DIR
     conda:
         "envs/r.yml"
@@ -221,9 +217,9 @@ rule plot_fail_curves:
         aligned_reads_index=rules.samtools_index_fail.output,
         ref=get_assembly
     output:
-        plot=OUT_DIR + "/curves/{spec}_GACT_fail_reads.pdf",
-        plot_ends=OUT_DIR + "/curves/{spec}_GACT_fail_reads_ends.pdf",
-        table_plot=OUT_DIR + "/curves/{spec}_GACT_fail_reads_for_plot.txt"
+        plot=OUT_DIR + "{spec}/curves/{spec}_GACT_fail_reads.pdf",
+        plot_ends=OUT_DIR + "{spec}/curves/{spec}_GACT_fail_reads_ends.pdf",
+        table_plot=OUT_DIR + "{spec}/curves/{spec}_GACT_fail_reads_for_plot.txt"
     params:
         depth_prefix=r"{spec}_ass_regions_flank",
         species=r"{spec}",
@@ -241,7 +237,7 @@ rule get_multimapped:
     input:
         aligned_reads=rules.minimap_raw_sort.output
     output:
-        OUT_DIR + "/multimapped/{spec}_mm_reads.txt"
+        OUT_DIR + "{spec}/multimapped/{spec}_mm_reads.txt"
     resources:
         mem_mb=20000
     shell:
@@ -256,8 +252,8 @@ rule multimapped:
         multimapped_reads=rules.get_multimapped.output,
         assembly=get_assembly
     output:
-        targets=OUT_DIR + "/multimapped/{spec}_mm_targets_withCIGAR.txt", #table with multimapped reads potential for scaffolding
-        locs=OUT_DIR + "/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
+        targets=OUT_DIR + "{spec}/list_multimapped_raw_reads_ends.txt", #table with multimapped reads potential for scaffolding
+        locs=OUT_DIR + "{spec}/multimapped/{spec}_locations_for_IGV.txt" #for IGV shots
     params:
         species=r"{spec}",
         path=OUT_DIR
