@@ -40,7 +40,7 @@ example table
 ## Toy example
 
 DAG of Snakemake rules:
-<img src="workflow/report/dag-21-06-2024.pdf" width="500"/>
+<img src="workflow/report/dag-21-06-2024.png" width="500"/>
 
 
 
