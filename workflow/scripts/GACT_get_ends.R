@@ -17,6 +17,7 @@ ref = snakemake@params[["ref"]]
 plot_ends=snakemake@output[["plot_ends"]] # PDF with contig ENDS
 table_plot=snakemake@output[["table_plot_all"]] # table with coordinates to plot all
 table_ends=snakemake@output[["table_ends"]] # table with main info for contig ENDS
+table_contigs=snakemake@output[["table_contigs"]]
 
 spec = snakemake@params[["species"]]
 outdepth=snakemake@params[["depth_prefix"]]
@@ -56,7 +57,7 @@ write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 # -------------------------------------------------------
 # run samtools depth, wait for output
 system(paste0("module load bioinfo/samtools/1.19; samtools depth -G UNMAP,SECONDARY -b ", outdepth, ".bed --reference ", ref ," ", sam, " -o ", outdepth, ".depth" ), intern = TRUE)
-system(paste0("mkdir -p PLOTS")), intern = TRUE)
+system(paste0("mkdir -p PLOTS"), intern = TRUE)
 # OPTION TO FILTER DEPTHS (every second line): 
 # system(paste0("awk -i inplace 'FNR%2' ", outdepth, ".depth"), intern = TRUE)
 #--------------------------------------------------------
@@ -101,7 +102,7 @@ hdlist <- unique(df_half_down[,"window_ID"])
 
 ######### PLOTTING CONTIG ENDS ############
 print("Exporting PDF with contig ends - right and left.")
-pdf(plot_ends,width=13.8, height=7.31)
+pdf(plot_ends,width=13.8, height=7.31, bg="white")
 
 if(nrow(df_half_down)>0){
 # ENDS downward
@@ -132,7 +133,29 @@ ends_out2 <- ends_out %>% separate(window_ID, into = c("contigID", "start", "end
 print("Writing table with contig ends.")
 write.table(ends_out2, table_ends, col.names=T, row.names=F, quote=F)
 
+contig_pairs <- df %>%
+  group_by(readID) %>%
+  summarise(contig_pair = paste(sort(contigID), collapse = "_")) %>%
+  ungroup()
 
+# Count the number of readIDs for each contigID pair
+contig_pair_counts <- contig_pairs %>%
+  group_by(contig_pair) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+# Split the contig_pair back into separate columns if needed
+contig_pair_counts <- contig_pair_counts %>%
+  separate(contig_pair, into = c("contigID1", "contigID2"), sep = "_")
+
+# Print the resulting data frame
+print(contig_pair_counts)
+print("Writing table with contig pairs and number of supporting reads.")
+write.table(contig_pair_counts, table_contigs, col.names=T, row.names=F, quote=F)
+
+
+
+#############################################
 # prepare for plotting - write.out the file
 # regions of whole lengths - ONLY (20 000)
 df_ofa2 <- df_ofa[! df_ofa$window_ID %in% ends_out$window_ID,]

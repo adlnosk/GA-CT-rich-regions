@@ -22,7 +22,7 @@ library(ggplot2)
 
 df3 <- read.table(intable, h=T)
 
-pdf(plotfile, width=13.8, height=7.31)
+pdf(plotfile, width=13.8, height=7.31, bg="white")
 ggplot(df3, aes(x=pos2, y=DP_norm, group=wID, color=wID)) + geom_line() + theme_minimal() + facet_wrap(~length) + theme(legend.position="none") + scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
 ggplot(df3, aes(x=pos2, y=DP, group=wID, color=wID)) + geom_line() + theme_minimal() + facet_wrap(~length) + theme(legend.position="none") + scale_x_discrete(labels = NULL, breaks = NULL) + labs(x = "")
 

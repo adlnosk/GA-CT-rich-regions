@@ -23,6 +23,8 @@ ref = snakemake@input[["assembly"]]
 locs_out = snakemake@output[["locs"]]
 targets_out = snakemake@output[["targets"]]
 multimapped_txt = snakemake@input[["multimapped_reads"]]
+table_contigs = snakemake@output[["table_contigs"]]
+
 
 path=snakemake@params[["path"]]
 setwd(path)
@@ -90,6 +92,35 @@ targets <- target %>% group_by(readID) %>% distinct(readID, contigID, .keep_all 
 
 print("Writing targets.")
 write.table(targets[,c("readID", "contigID", "start", "end", "contig_start", "leftclip", "rightclip")], targets_out,  col.names=T, row.names=F, quote=F)  
+
+
+
+########## Write out contig pairs
+df <- targets
+contig_pairs <- df %>%
+  group_by(readID) %>%
+  summarise(contig_pair = paste(sort(contigID), collapse = "_")) %>%
+  ungroup()
+
+# Count the number of readIDs for each contigID pair
+contig_pair_counts <- contig_pairs %>%
+  group_by(contig_pair) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+# Split the contig_pair back into separate columns if needed
+contig_pair_counts <- contig_pair_counts %>%
+  separate(contig_pair, into = c("contigID1", "contigID2"), sep = "_")
+
+# Print the resulting data frame
+print(contig_pair_counts)
+print("Writing table with contig pairs and number of supporting reads.")
+write.table(contig_pair_counts, table_contigs, col.names=T, row.names=F, quote=F)
+
+
+
+
+
 
 # locs for IGV
 #out <- as.data.frame(targets[,c("contigID","readID", "st","en")])
