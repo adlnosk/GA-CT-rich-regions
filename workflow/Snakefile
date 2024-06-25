@@ -38,10 +38,6 @@ def which_analysis():
        expand (OUT_DIR + "{spec}/multimapped_raw_reads_ends.txt", spec=SPEC), #list reads, that are mapping to 2 contig ends (possible bridge)
     ]
     # Optionals analysis steps
-    if config["plot_contig_curves_all"] == "True":
-        analysis_inputs.append(
-	    expand (OUT_DIR + "{spec}/PLOTS/curves_assembly_all.pdf", spec=SPEC),
-        )
     if config["detect_fail_regions"] == "True": 
         analysis_inputs.append(
             expand (OUT_DIR + "{spec}/multimapped_fail_reads_ends.txt", spec=SPEC),
@@ -67,7 +63,7 @@ rule zip_fastq_fail:
         temp(OUT_DIR + "{spec}/mapped_reads/fail.fq.gz")
     threads: 5
     resources: 
-        mem_mb=50000
+        mem_mb=20000
     shell:
         """
         module load bioinfo/samtools/1.19; module load devel/pigz/2.8; samtools sort -@ 5 -n {input} | samtools fastq --threads 5 | pigz -f -p 5 > {output}
@@ -80,6 +76,8 @@ rule GA_CT_assembly:
         fasta_file=get_assembly
     output:
         out=OUT_DIR + "{spec}/GACT_regions_in_assembly.txt"
+    resources:
+        mem_mb=5000
     conda:
         "envs/py.yml"
     params:
@@ -92,7 +90,9 @@ rule GA_CT_reads:
     input: 
         fastq_gzip_file=get_fastq
     output:
-        out=temp(OUT_DIR + "GACT_raw_reads.txt")
+        out=temp(OUT_DIR + "{spec}/GACT_raw_reads.txt")
+    resources:
+        mem_mb=5000
     conda:
         "envs/py.yml"
     params:
@@ -106,6 +106,8 @@ rule GA_CT_fail_reads:
         fastq_gzip_file=OUT_DIR + "{spec}/mapped_reads/fail.fq.gz"
     output:
         out=temp(OUT_DIR + "{spec}/GACT_fail_reads.txt")
+    resources:
+        mem_mb=5000
     conda:
         "envs/py.yml"
     params:
@@ -121,10 +123,10 @@ rule minimap_raw_sort:
         target=get_assembly,
         query=get_fastq # or get_raw_reads in BAM
     output:
-        temp(OUT_DIR + "{spec}/mapped_reads/raw_sorted.bam")
-    threads: 6
+        OUT_DIR + "{spec}/mapped_reads/raw_sorted.bam"
+    threads: 12
     resources:
-        mem_mb=100000
+        mem_mb=50000
     params:
         extra="-x map-hifi",
         sorting="coordinate"
@@ -147,10 +149,10 @@ rule minimap_fail_sort:
         target=get_assembly,
         query=rules.zip_fastq_fail.output
     output:
-        temp(OUT_DIR + "{spec}/mapped_reads/fail_sorted.bam")
-    threads: 6
+        OUT_DIR + "{spec}/mapped_reads/fail_sorted.bam"
+    threads: 12
     resources:
-        mem_mb=100000
+        mem_mb=50000
     params:
         extra="-x map-hifi",
         sorting="coordinate",
@@ -177,7 +179,6 @@ rule get_ends_prep_plot:
     output:
         table_ends=OUT_DIR + "{spec}/contigs_ends.txt",
         plot_ends=OUT_DIR + "{spec}/PLOTS/curves_contigs_ends.pdf",
-        table_plot_all=OUT_DIR + "{spec}/PLOTS/table_for_plot_curves_all.txt",
         samtools_depths=temp(OUT_DIR + "{spec}/ass_regions_flank.depth"),
     params:
         depth_prefix=r"ass_regions_flank",
@@ -187,24 +188,11 @@ rule get_ends_prep_plot:
         species=r"{spec}"
     conda: 
     	"envs/r.yml"
-    resources:
-        mem_mb=100000
-    script:
-        "scripts/GACT_get_ends.R"
-
-rule plot_curves_all:
-    input:
-        table=rules.get_ends_prep_plot.output.table_plot_all,
-    output:
-        plot=OUT_DIR + "{spec}/PLOTS/curves_assembly_all.pdf"
-    params:
-        path=OUT_DIR
-    conda:
-        "envs/r.yml"
+    threads: 3
     resources:
         mem_mb=200000
     script:
-        "scripts/GACT_plot_curves_all.R"
+        "scripts/GACT_get_ends.R"
 
 # analyse multimapped reads
 rule get_multimapped:
@@ -213,7 +201,7 @@ rule get_multimapped:
     output:
         temp(OUT_DIR + "{spec}/multimapped/mm_reads.txt")
     resources:
-        mem_mb=20000
+        mem_mb=5000
     shell:
         """
         module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
@@ -232,7 +220,7 @@ rule multimapped:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=200000
+        mem_mb=10000
     conda:
         "envs/r.yml"
     script:
@@ -245,7 +233,7 @@ rule get_multimapped_fail:
     output:
         temp(OUT_DIR + "{spec}/multimapped/mm_reads_fail.txt")
     resources:
-        mem_mb=20000
+        mem_mb=5000
     shell:
         """
         module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
@@ -256,7 +244,7 @@ rule multimapped_fail:
         ass_regions=rules.GA_CT_assembly.output,
         reads_regions=rules.GA_CT_fail_reads.output,
         multimapped_reads=rules.get_multimapped_fail.output,
-        ref=get_assembly
+        assembly=get_assembly
     output:
         targets=OUT_DIR + "{spec}/multimapped_fail_reads_ends.txt", #table with fail multimapped reads potential for scaffolding
         table_contigs=OUT_DIR + "{spec}/contigs_pairs_counts_fail.txt"
@@ -264,7 +252,7 @@ rule multimapped_fail:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=200000
+        mem_mb=10000
     conda:
         "envs/r.yml"
     script:

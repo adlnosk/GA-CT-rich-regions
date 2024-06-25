@@ -15,14 +15,13 @@ sam = snakemake@input[["aligned_reads"]]
 ref = snakemake@params[["ref"]]
 
 plot_ends=snakemake@output[["plot_ends"]] # PDF with contig ENDS
-table_plot=snakemake@output[["table_plot_all"]] # table with coordinates to plot all
 table_ends=snakemake@output[["table_ends"]] # table with main info for contig ENDS
-table_contigs=snakemake@output[["table_contigs"]]
 
 spec = snakemake@params[["species"]]
 outdepth=snakemake@params[["depth_prefix"]]
 flank=snakemake@params[["plotting_flank"]]
 
+threads = snakemake@threads
 path=snakemake@params[["path"]]
 setwd(paste0(path,spec))
 
@@ -30,9 +29,12 @@ setwd(paste0(path,spec))
 # load libraries
 library(dplyr)
 library(ggplot2)
+library(data.table)
+library(reshape2)
+library(stringr)
 
 # FASTA table
-fa <- read.table(fa_file)
+fa <- fread(fa_file, header = FALSE)
 colnames(fa)<-c("contigID", "window_start", "window_end", "length", "sequence")
 fa$window_ID <- paste0(fa$contigID,"_", fa$window_start,"_", fa$window_end,"_", fa$sequence)
 
@@ -46,17 +48,30 @@ map$groupID <- paste0(map$contigID,"_",map$num)
 ofa$st <- ofa$window_start - flank
 ofa$en <- ofa$window_end + flank
 ofa <- ofa[,c("window_ID","length","contigID","st","en")]
-ofa[,"st"] <- ifelse(ofa[,"st"]<0,0,ofa[,"st"])
-ofa$wID <- paste0(ofa$contigID,"_", ofa$st,"_", ofa$en)
+ofa$st <- as.integer(ifelse(ofa$st < 0, 0, ofa$st))
 
 ofa$keep <- ofa$en - ofa$st
-out <-  ofa[which(ofa$keep>0),c("contigID","st","en", "window_ID")]
+
+print("Total number of regions and plotting_length summary:")
+print(nrow(ofa))
+print(summary(ofa$keep))
+
+####### continue only with regions < 2*flank (so cut regions)
+ofa_ends <- ofa[which(ofa$keep<(2*flank) & ofa$keep>0),]
+out <- ofa_ends[,c("contigID","st","en", "window_ID")]
+
+print("Further investigating only broken regions = regions smaller than 2*flank. Number of broken regions (=ends) is:")
+print(nrow(ofa_ends))
+print(summary(ofa_ends$keep))
+
 
 write.table(out, paste0(outdepth,".bed"), col.names=F, row.names=F, quote=F)
 
+print("Going to run samtools depth.")
+
 # -------------------------------------------------------
 # run samtools depth, wait for output
-system(paste0("module load bioinfo/samtools/1.19; samtools depth -G UNMAP,SECONDARY -b ", outdepth, ".bed --reference ", ref ," ", sam, " -o ", outdepth, ".depth" ), intern = TRUE)
+system(paste0("module load bioinfo/samtools/1.19; samtools depth -@ ", threads, " -G UNMAP,SECONDARY -b ", outdepth, ".bed --reference ", ref ," ", sam, " -o ", outdepth, ".depth" ), intern = TRUE)
 system(paste0("mkdir -p PLOTS"), intern = TRUE)
 # OPTION TO FILTER DEPTHS (every second line): 
 # system(paste0("awk -i inplace 'FNR%2' ", outdepth, ".depth"), intern = TRUE)
@@ -65,23 +80,23 @@ system(paste0("mkdir -p PLOTS"), intern = TRUE)
 ### clean 
 rm(fa)
 
-df <- read.delim(paste0(outdepth, ".depth"), h=F)
+file_path <- paste0(outdepth, ".depth")
+df <- fread(file_path, header = FALSE)
+
+#df <- read.delim(paste0(outdepth, ".depth"), h=F)
 colnames(df) <- c("contigID", "pos", "DP")
+
 df$a <- paste0(df$contigID, "_", df$pos)
+ofa <- ofa_ends
 ofa$a <- paste0(ofa$contigID, "_", ofa$st)
 
 # create dictionary to assign windowID to samtools depth output
-
-#contig_positions <- list()
-#for (i in 1:nrow(ofa)) {
-#  # Generate a sequence of positions from start to end
-#  positions <- paste0(ofa$window_ID[i], ".", ofa$contigID[i],"_", seq(ofa$st[i], ofa$en[i]))
-#  contig_positions[[i]] <- positions
-#  }
-# faster than the loop:
-contig_positions <- vector("list", nrow(ofa))
-contig_positions <- unlist(lapply(seq_len(nrow(ofa)), function(i) paste0(ofa$window_ID[i], ".", ofa$contigID[i], "_", seq(ofa$st[i], ofa$en[i], by=1))))
-
+contig_positions <- list()
+for (i in 1:nrow(ofa)) {
+  # Generate a sequence of positions from start to end
+  positions <- paste0(ofa$window_ID[i], ".", ofa$contigID[i],"_", seq(ofa$st[i], ofa$en[i]))
+  contig_positions[[i]] <- positions
+  }
 
 require(reshape2)
 dd <- melt(contig_positions)
@@ -132,49 +147,4 @@ ends_out2 <- ends_out %>% separate(window_ID, into = c("contigID", "start", "end
 
 print("Writing table with contig ends.")
 write.table(ends_out2, table_ends, col.names=T, row.names=F, quote=F)
-
-contig_pairs <- df %>%
-  group_by(readID) %>%
-  summarise(contig_pair = paste(sort(contigID), collapse = "_")) %>%
-  ungroup()
-
-# Count the number of readIDs for each contigID pair
-contig_pair_counts <- contig_pairs %>%
-  group_by(contig_pair) %>%
-  summarise(count = n()) %>%
-  ungroup()
-
-# Split the contig_pair back into separate columns if needed
-contig_pair_counts <- contig_pair_counts %>%
-  separate(contig_pair, into = c("contigID1", "contigID2"), sep = "_")
-
-# Print the resulting data frame
-print(contig_pair_counts)
-print("Writing table with contig pairs and number of supporting reads.")
-write.table(contig_pair_counts, table_contigs, col.names=T, row.names=F, quote=F)
-
-
-
-#############################################
-# prepare for plotting - write.out the file
-# regions of whole lengths - ONLY (20 000)
-df_ofa2 <- df_ofa[! df_ofa$window_ID %in% ends_out$window_ID,]
-df_rest <- df_ofa2 %>% group_by(wID) %>% mutate(pos = row_number()) %>% mutate(pos2  = row_number()+(((2*flank)+length)-max(pos)))
-#df2 <- rbind(df_half_down, df_rest)
-df2 <- df_rest
-
-# SET NORMALISED DEPTH (per wID group)
-# merge both
-df3 <- df2 %>% group_by(wID) %>% mutate(DP_norm = (DP / max(DP)) * 100)
-
-mu <- mean(df2$DP)
-sd <- sd(df2$DP)
-df2$zscore <- (df2$DP-mu)/sd
-
-print("Writing table for plotting all.")
-print(head(df3))
-write.table(df3, table_plot, col.names=T, row.names=F, quote=F)
-
-
-
 

@@ -20,7 +20,6 @@ fq_file = snakemake@input[["reads_regions"]]
 ref = snakemake@input[["assembly"]]
 
 
-locs_out = snakemake@output[["locs"]]
 targets_out = snakemake@output[["targets"]]
 multimapped_txt = snakemake@input[["multimapped_reads"]]
 table_contigs = snakemake@output[["table_contigs"]]
@@ -93,8 +92,6 @@ targets <- target %>% group_by(readID) %>% distinct(readID, contigID, .keep_all 
 print("Writing targets.")
 write.table(targets[,c("readID", "contigID", "start", "end", "contig_start", "leftclip", "rightclip")], targets_out,  col.names=T, row.names=F, quote=F)  
 
-
-
 ########## Write out contig pairs
 df <- targets
 contig_pairs <- df %>%
@@ -117,20 +114,6 @@ print(contig_pair_counts)
 print("Writing table with contig pairs and number of supporting reads.")
 write.table(contig_pair_counts, table_contigs, col.names=T, row.names=F, quote=F)
 
-
-
-
-
-
-# locs for IGV
-#out <- as.data.frame(targets[,c("contigID","readID", "st","en")])
-#out[,"st2"] <- formatC(out[,"st"], format="d", big.mark=",") #add comas into numbers
-#out[,"en2"] <- formatC(out[,"en"], format="d", big.mark=",")
-#out[,"readID2"] <- gsub("/", "_", out$readID)
-#locs <- paste0(out[,"contigID"],":",out[,"st2"],"-",out[,"en2"])
-#locs <- paste0("goto ", out[,"contigID"],":",out[,"st2"],"-",out[,"en2"],"\n","sort position\n", "collapse\n", "snapshot ", out[,"readID2"], "_", out[,"contigID"], ".png\n")
-#print("Writing locations for IGV (locs).")
-#write.table(locs, locs_out, col.names=F, row.names=F, quote=F)
 
 print("END OF SCRIPT")
 

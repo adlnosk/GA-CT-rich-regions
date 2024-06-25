@@ -27,15 +27,6 @@ fail_reads:
 
 ## Optional parts of the workflow
 
-# Detect GACT regions in assembly
-GACT_assembly: 'True'
-
-# Detect GACT regions in fail reads
-GACT_fail: 'True'
-
-# Analyse multimapped reads
-GACT_multimapped: 'True'
-
-# Analyse bridging reads
-GACT_bridging: 'True'
+# Use fail reads in same manner as raw reads? => OUT_DIR + "/list_multimapped_fail_reads_ends.txt"
+detect_fail_regions: 'True'
 
