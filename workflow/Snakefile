@@ -220,7 +220,7 @@ rule multimapped:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=10000
+        mem_mb=50000
     conda:
         "envs/r.yml"
     script:
@@ -252,7 +252,7 @@ rule multimapped_fail:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=10000
+        mem_mb=50000
     conda:
         "envs/r.yml"
     script:
