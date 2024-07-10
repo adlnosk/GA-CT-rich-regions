@@ -9,27 +9,41 @@ GA/CT simple sequence repeats have been shown to cause a drop in HiFi coverage i
 ## Workflow structure
 
 - input files: 
-	- mandatory: assembly (`.fasta.gz`)
-	- optional: HiFi raw reads, HiFi fail reads (`.bam` or `.fastq.gz`)
+	- mandatory: assembly (`.fasta.gz`), HiFi raw reads (`.bam` or `.fastq.gz`)
+	- optional: HiFi fail reads (`.bam` or `.fastq.gz`)
+
+- structure of /results folder:
+```
+Diplocyclos_palmidus/
+├── ass_regions_flank.bed
+├── contigs_ends.txt
+├── contigs_pairs_counts_fail.txt
+├── contigs_pairs_counts.txt
+├── Diplocyclos_palmidus_GACT_fail_reads.txt
+├── GACT_regions_in_assembly.txt
+├── mapped_reads
+│   ├── Diplocyclos_palmidus_raw_sorted.bam
+│   ├── fail_sorted.bam
+│   └── raw_sorted.bam
+├── multimapped
+│   └── Diplocyclos_palmidus_mm_reads_fail.txt
+├── multimapped_fail_reads_ends.txt
+├── multimapped_raw_reads_ends.txt
+└── PLOTS
+    └── curves_contigs_ends.pdf
+```
+
 - main output files:
-	- list of GA/CT regions detected in assembly = `file`
+	- list of GA/CT regions detected in assembly = `GACT_regions_in_assembly.txt`
+
 ```
 example table
 ```
-	- list of contigs, that are broken due to GA/CT
+- list of contig pairs with number of multimapped reads (potential links) = `contigs_pairs_counts.txt`
+
 ```
 example table
 ```
-	- list of contig pairs with number of multimapped reads (potential links)
-```
-example table
-```
-- additional output files:
-	- XX.pdf
-	- XX.pdf
-	- table for plotting XX
-	- table for plotting XX
-	
 
 ## Repository structure
 
