@@ -63,6 +63,14 @@ ptg000003l ptg000012l 1
 - `results/`: Directory where the output will be saved.
 - `config/`: Contains `config.yaml` to specify cluster environment and `config_path.yaml` to specify input file paths.
 
+## To run follow these steps:
+: 1. Specify your species name, assembly and reads paths in config/config_path.yaml
+	- the pipeline will execute any species, which is listed - to disable the species, you can comment the species name
+: 2. Submit workflow/run_Snakefile.sh (for example as `cd workflow; sbatch run_Snakefile.sh` )
+	- automatically dag of jobs should be produced in the reports/ directory, but it might need adjustments based on the number of species. The pipeline should sturt running regardless.
+: 3. For troubleshooting, check the pipeline trace in workflow/.snakemake/log and for individual rules the workflow/logs/.
+
+
 ## Toy example
 
 DAG of Snakemake rules:
