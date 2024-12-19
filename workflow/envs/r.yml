@@ -9,4 +9,6 @@ dependencies:
 - r-gsubfn
 - r-reshape2
 - r-stringr
+- r-tidyr
+- r-data.table
 - samtools=1.19

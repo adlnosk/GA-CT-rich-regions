@@ -92,7 +92,8 @@ rule GA_CT_reads:
     output:
         out=temp(OUT_DIR + "{spec}/GACT_raw_reads.txt")
     resources:
-        mem_mb=5000
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 1.1
+        #mem_mb=5000
     conda:
         "envs/py.yml"
     params:
@@ -131,7 +132,7 @@ rule minimap_raw_sort:
         extra="-x map-hifi",
         sorting="coordinate"
     wrapper:
-        "v3.12.0/bio/minimap2/aligner"
+        "v5.5.0/bio/minimap2/aligner"
 
 rule samtools_index_raw:
     input:
@@ -157,7 +158,7 @@ rule minimap_fail_sort:
         extra="-x map-hifi",
         sorting="coordinate",
     wrapper:
-        "v3.12.0/bio/minimap2/aligner"
+        "v5.5.0/bio/minimap2/aligner"
 
 rule samtools_index_fail:
     input:
@@ -204,7 +205,7 @@ rule get_multimapped:
         mem_mb=5000
     shell:
         """
-        module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
+        module load bioinfo/samtools/1.19; samtools view -F 0x804 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
         """
 
 rule multimapped:
@@ -236,7 +237,7 @@ rule get_multimapped_fail:
         mem_mb=5000
     shell:
         """
-        module load bioinfo/samtools/1.19; samtools view -F 0x104 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
+        module load bioinfo/samtools/1.19; samtools view -F 0x804 {input} | awk '$6 ~ /H|S/{{print $0}}' | awk '{{print $1, $2, $3, $4, $6, length ($10)-1 }}'  > {output}
         """
 
 rule multimapped_fail:

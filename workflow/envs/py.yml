@@ -4,4 +4,4 @@ channels:
 - bioconda
 dependencies:
 - biopython
-
+- snakemake-wrapper-utils =0.6.2
