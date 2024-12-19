@@ -63,7 +63,7 @@ rule zip_fastq_fail:
         temp(OUT_DIR + "{spec}/mapped_reads/fail.fq.gz")
     threads: 5
     resources: 
-        mem_mb=20000
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 1
     shell:
         """
         module load bioinfo/samtools/1.19; module load devel/pigz/2.8; samtools sort -@ 5 -n {input} | samtools fastq --threads 5 | pigz -f -p 5 > {output}
@@ -77,7 +77,7 @@ rule GA_CT_assembly:
     output:
         out=OUT_DIR + "{spec}/GACT_regions_in_assembly.txt"
     resources:
-        mem_mb=5000
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 1.5
     conda:
         "envs/py.yml"
     params:
@@ -92,7 +92,7 @@ rule GA_CT_reads:
     output:
         out=temp(OUT_DIR + "{spec}/GACT_raw_reads.txt")
     resources:
-        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 1.1
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 1.5
         #mem_mb=5000
     conda:
         "envs/py.yml"
@@ -127,12 +127,12 @@ rule minimap_raw_sort:
         OUT_DIR + "{spec}/mapped_reads/raw_sorted.bam"
     threads: 12
     resources:
-        mem_mb=50000
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 2
     params:
         extra="-x map-hifi",
         sorting="coordinate"
     wrapper:
-        "v5.5.0/bio/minimap2/aligner"
+        "v3.12.0/bio/minimap2/aligner"
 
 rule samtools_index_raw:
     input:
@@ -153,12 +153,12 @@ rule minimap_fail_sort:
         OUT_DIR + "{spec}/mapped_reads/fail_sorted.bam"
     threads: 12
     resources:
-        mem_mb=50000
+        mem_mb=lambda wildcards, input, attempt: (input.size//1000000) * 2
     params:
         extra="-x map-hifi",
         sorting="coordinate",
     wrapper:
-        "v5.5.0/bio/minimap2/aligner"
+        "v3.12.0/bio/minimap2/aligner"
 
 rule samtools_index_fail:
     input:
@@ -191,7 +191,7 @@ rule get_ends_prep_plot:
     	"envs/r.yml"
     threads: 3
     resources:
-        mem_mb=200000
+        mem_mb=5000
     script:
         "scripts/GACT_get_ends.R"
 
@@ -221,7 +221,7 @@ rule multimapped:
         species=r"{spec}",
         path=OUT_DIR
     resources:
-        mem_mb=50000
+        mem_mb=5000
     conda:
         "envs/r.yml"
     script:
