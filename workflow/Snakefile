@@ -2,9 +2,23 @@
 import os
 import numpy as np
 import gzip
+import subprocess
+import pkg_resources
 
 import sys
 print(sys.version)
+
+
+# pip install packages if not installed
+required = {'snakemake-wrapper-utils', 'datrie'}
+installed = {pkg.key for pkg in pkg_resources.working_set}
+missing = required - installed
+
+if missing:
+    python = sys.executable
+    subprocess.check_call([python, '-m', 'pip', 'install', *missing], stdout=subprocess.DEVNULL)
+
+
 
 configfile: "../config/config_paths.yaml"
 
