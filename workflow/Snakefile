@@ -10,13 +10,13 @@ print(sys.version)
 
 
 # pip install packages if not installed
-required = {'snakemake-wrapper-utils', 'datrie'}
-installed = {pkg.key for pkg in pkg_resources.working_set}
-missing = required - installed
-
-if missing:
-    python = sys.executable
-    subprocess.check_call([python, '-m', 'pip', 'install', '--user', *missing], stdout=subprocess.DEVNULL)
+#required = {'snakemake-wrapper-utils', 'datrie'}
+#installed = {pkg.key for pkg in pkg_resources.working_set}
+#missing = required - installed
+#
+#if missing:
+#    python = sys.executable
+#    subprocess.check_call([python, '-m', 'pip', 'install', '--user', *missing], stdout=subprocess.DEVNULL)
 
 
 
